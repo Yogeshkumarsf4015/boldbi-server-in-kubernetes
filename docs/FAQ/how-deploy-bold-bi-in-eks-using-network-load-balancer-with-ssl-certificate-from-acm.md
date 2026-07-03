@@ -85,7 +85,7 @@ The below section explains how to deploy Bold BI in EKS using Nginx Network Load
 1. Add the Bold BI helm repository.
 
 ```console
-helm repo add boldbi https://boldbi.github.io/boldbi-kubernetes
+helm repo add boldbi https://boldbi.github.io/boldbi-server-in-kubernetes
 helm repo update
 ```
 
@@ -110,7 +110,7 @@ kubectl create ns bold-services
 
 ## Install Chart
 
-For the Helm chart, you need to craft a `values.yaml` file. So download the values.yaml file from [here](https://raw.githubusercontent.com/boldbi/boldbi-kubernetes/main/helm/custom-values/eks-values.yaml) make the required changes.
+For the Helm chart, you need to craft a `values.yaml` file. So download the values.yaml file from [here](https://raw.githubusercontent.com/boldbi/boldbi-server-in-kubernetes/main/helm/custom-values/eks-values.yaml) make the required changes.
 
 * Update the appBaseURL, and if necessary, modify the namespace accordingly.
 	![Update_Appbaseurl](images/update_appbaseurl.png)
