@@ -27,11 +27,23 @@ spec:
           value: k8s
         - name: APP_BASE_URL
           value: <application_base_url>
+        - name: BOLD_SERVICES_PV_USED
+          value: "false"
         - name: APPLICATIONINSIGHTS_CONNECTION_STRING
           valueFrom:
             secretKeyRef:
               name: bold-secret
               key: application_insights_connection_string_secret
+        envFrom:
+        - secretRef:
+            name: azure-blob-storage-secret
+            optional: true
+        - secretRef:
+            name: oci-storage-secret
+            optional: true
+        - secretRef:
+            name: aws-s3-storage-secret
+            optional: true
         readinessProbe:
           httpGet:
             path: /health-check
@@ -40,15 +52,9 @@ spec:
           periodSeconds: 15
           timeoutSeconds: 5
         volumeMounts:
-        - mountPath: /application/app_data
-          name: id-web-volume
         - mountPath: /application/idp/web/logs/k8s
           name: log4net-config-volume
       volumes:
-      - name: id-web-volume
-        persistentVolumeClaim:
-          claimName: bold-fileserver-claim
-          readOnly: false
       - name: log4net-config-volume
         configMap:
           name: log4net-config
@@ -72,10 +78,7 @@ spec:
       - name: id-web-initialization
         image: busybox:1.28
         command: ["/bin/sh","-c"]
-        args: ["while [ ! -f /application/app_data/configuration/config.json ] || [ ! -f /application/app_data/configuration/privatekeys.dat ]; do echo 'Waiting for required files...'; sleep 10; done; echo 'Both config.json and privatekeys.dat files exist.'"]
-        volumeMounts:
-        - mountPath: /application/app_data
-          name: id-api-volume
+        args: ["echo 'Waiting for id-web service...'; while ! nc -z id-web-service 6000; do echo 'Still waiting...'; sleep 5; done; echo 'id-web is ready'"]
       containers:
       - name: id-api-container
         image: us-docker.pkg.dev/boldbi-294612/boldbi/bold-identity-api:16.2.5
@@ -88,6 +91,18 @@ spec:
         env:
         - name: BOLD_SERVICES_HOSTING_ENVIRONMENT
           value: k8s
+        - name: BOLD_SERVICES_PV_USED
+          value: "false"
+        envFrom:
+        - secretRef:
+            name: azure-blob-storage-secret
+            optional: true
+        - secretRef:
+            name: oci-storage-secret
+            optional: true
+        - secretRef:
+            name: aws-s3-storage-secret
+            optional: true
         readinessProbe:
           httpGet:
             path: /health-check
@@ -96,15 +111,9 @@ spec:
           periodSeconds: 15
           timeoutSeconds: 5
         volumeMounts:
-        - mountPath: /application/app_data
-          name: id-api-volume
         - mountPath: /application/idp/api/logs/k8s
           name: log4net-config-volume
       volumes:
-      - name: id-api-volume
-        persistentVolumeClaim:
-          claimName: bold-fileserver-claim
-          readOnly: false
       - name: log4net-config-volume
         configMap:
           name: log4net-config
@@ -128,10 +137,8 @@ spec:
       - name: id-web-initialization
         image: busybox:1.28
         command: ["/bin/sh","-c"]
-        args: ["while [ ! -f /application/app_data/configuration/config.json ] || [ ! -f /application/app_data/configuration/privatekeys.dat ]; do echo 'Waiting for required files...'; sleep 10; done; echo 'Both config.json and privatekeys.dat files exist.'"]
+        args: ["echo 'Waiting for id-web service...'; while ! nc -z id-web-service 6000; do echo 'Still waiting...'; sleep 5; done; echo 'id-web is ready'"]
         volumeMounts:
-        - mountPath: /application/app_data
-          name: id-ums-volume
       containers:
       - name: id-ums-container
         image: us-docker.pkg.dev/boldbi-294612/boldbi/bold-ums:16.2.5
@@ -146,6 +153,8 @@ spec:
           value: k8s
         - name: BOLD_SERVICES_USE_SITE_IDENTIFIER
           value: "true"
+        - name: BOLD_SERVICES_PV_USED
+          value: "false"
         envFrom:
         - secretRef:
               name: bold-user-secret
@@ -156,6 +165,15 @@ spec:
         - configMapRef:
               name: branding-config
               optional: true
+        - secretRef:
+            name: azure-blob-storage-secret
+            optional: true
+        - secretRef:
+            name: oci-storage-secret
+            optional: true
+        - secretRef:
+            name: aws-s3-storage-secret
+            optional: true
         readinessProbe:
           httpGet:
             path: /health-check
@@ -164,15 +182,9 @@ spec:
           periodSeconds: 15
           timeoutSeconds: 5
         volumeMounts:
-        - mountPath: /application/app_data
-          name: id-ums-volume
         - mountPath: /application/idp/ums/logs/k8s
           name: log4net-config-volume
       volumes:
-      - name: id-ums-volume
-        persistentVolumeClaim:
-          claimName: bold-fileserver-claim
-          readOnly: false
       - name: log4net-config-volume
         configMap:
           name: log4net-config
@@ -196,10 +208,7 @@ spec:
       - name: id-web-initialization
         image: busybox:1.28
         command: ["/bin/sh","-c"]
-        args: ["while [ ! -f /application/app_data/configuration/config.json ] || [ ! -f /application/app_data/configuration/privatekeys.dat ]; do echo 'Waiting for required files...'; sleep 10; done; echo 'Both config.json and privatekeys.dat files exist.'"]
-        volumeMounts:
-        - mountPath: /application/app_data
-          name: bi-web-volume
+        args: ["echo 'Waiting for id-web service...'; while ! nc -z id-web-service 6000; do echo 'Still waiting...'; sleep 5; done; echo 'id-web is ready'"]
       containers:
       - name: bi-web-container
         image: us-docker.pkg.dev/boldbi-294612/boldbi/boldbi-server:16.2.5
@@ -212,6 +221,18 @@ spec:
         env:
         - name: BOLD_SERVICES_HOSTING_ENVIRONMENT
           value: k8s
+        - name: BOLD_SERVICES_PV_USED
+          value: "false"
+        envFrom:
+        - secretRef:
+            name: azure-blob-storage-secret
+            optional: true
+        - secretRef:
+            name: oci-storage-secret
+            optional: true
+        - secretRef:
+            name: aws-s3-storage-secret
+            optional: true
         readinessProbe:
           httpGet:
             path: /health-check
@@ -220,15 +241,9 @@ spec:
           periodSeconds: 15
           timeoutSeconds: 5
         volumeMounts:
-        - mountPath: /application/app_data
-          name: bi-web-volume
         - mountPath: /application/bi/web/logs/k8s
           name: log4net-config-volume
       volumes:
-      - name: bi-web-volume
-        persistentVolumeClaim:
-          claimName: bold-fileserver-claim
-          readOnly: false
       - name: log4net-config-volume
         configMap:
           name: log4net-config
@@ -252,10 +267,7 @@ spec:
       - name: id-web-initialization
         image: busybox:1.28
         command: ["/bin/sh","-c"]
-        args: ["while [ ! -f /application/app_data/configuration/config.json ] || [ ! -f /application/app_data/configuration/privatekeys.dat ]; do echo 'Waiting for required files...'; sleep 10; done; echo 'Both config.json and privatekeys.dat files exist.'"]
-        volumeMounts:
-        - mountPath: /application/app_data
-          name: bi-api-volume
+        args: ["echo 'Waiting for id-web service...'; while ! nc -z id-web-service 6000; do echo 'Still waiting...'; sleep 5; done; echo 'id-web is ready'"]
       containers:
       - name: bi-api-container
         image: us-docker.pkg.dev/boldbi-294612/boldbi/boldbi-server-api:16.2.5
@@ -268,6 +280,18 @@ spec:
         env:
         - name: BOLD_SERVICES_HOSTING_ENVIRONMENT
           value: k8s
+        - name: BOLD_SERVICES_PV_USED
+          value: "false"
+        envFrom:
+        - secretRef:
+            name: azure-blob-storage-secret
+            optional: true
+        - secretRef:
+            name: oci-storage-secret
+            optional: true
+        - secretRef:
+            name: aws-s3-storage-secret
+            optional: true
         readinessProbe:
           httpGet:
             path: /health-check
@@ -276,15 +300,9 @@ spec:
           periodSeconds: 15
           timeoutSeconds: 5
         volumeMounts:
-        - mountPath: /application/app_data
-          name: bi-api-volume
         - mountPath: /application/bi/api/logs/k8s
           name: log4net-config-volume
       volumes:
-      - name: bi-api-volume
-        persistentVolumeClaim:
-          claimName: bold-fileserver-claim
-          readOnly: false
       - name: log4net-config-volume
         configMap:
           name: log4net-config
@@ -308,10 +326,7 @@ spec:
       - name: id-web-initialization
         image: busybox:1.28
         command: ["/bin/sh","-c"]
-        args: ["while [ ! -f /application/app_data/configuration/config.json ] || [ ! -f /application/app_data/configuration/privatekeys.dat ]; do echo 'Waiting for required files...'; sleep 10; done; echo 'Both config.json and privatekeys.dat files exist.'"]
-        volumeMounts:
-        - mountPath: /application/app_data
-          name: bi-jobs-volume
+        args: ["echo 'Waiting for id-web service...'; while ! nc -z id-web-service 6000; do echo 'Still waiting...'; sleep 5; done; echo 'id-web is ready'"]
       containers:
       - name: bi-jobs-container
         image: us-docker.pkg.dev/boldbi-294612/boldbi/boldbi-server-jobs:16.2.5
@@ -324,6 +339,18 @@ spec:
         env:
         - name: BOLD_SERVICES_HOSTING_ENVIRONMENT
           value: k8s
+        - name: BOLD_SERVICES_PV_USED
+          value: "false"
+        envFrom:
+        - secretRef:
+            name: azure-blob-storage-secret
+            optional: true
+        - secretRef:
+            name: oci-storage-secret
+            optional: true
+        - secretRef:
+            name: aws-s3-storage-secret
+            optional: true
         readinessProbe:
           httpGet:
             path: /health-check
@@ -332,15 +359,9 @@ spec:
           periodSeconds: 15
           timeoutSeconds: 5
         volumeMounts:
-        - mountPath: /application/app_data
-          name: bi-jobs-volume
         - mountPath: /application/bi/jobs/logs/k8s
           name: log4net-config-volume
       volumes:
-      - name: bi-jobs-volume
-        persistentVolumeClaim:
-          claimName: bold-fileserver-claim
-          readOnly: false
       - name: log4net-config-volume
         configMap:
           name: log4net-config
@@ -364,10 +385,7 @@ spec:
       - name: id-web-initialization
         image: busybox:1.28
         command: ["/bin/sh","-c"]
-        args: ["while [ ! -f /application/app_data/configuration/config.json ] || [ ! -f /application/app_data/configuration/privatekeys.dat ]; do echo 'Waiting for required files...'; sleep 10; done; echo 'Both config.json and privatekeys.dat files exist.'"]
-        volumeMounts:
-        - mountPath: /application/app_data
-          name: bi-dataservice-volume
+        args: ["echo 'Waiting for id-web service...'; while ! nc -z id-web-service 6000; do echo 'Still waiting...'; sleep 5; done; echo 'id-web is ready'"]
       containers:
       - name: bi-dataservice-container
         image: us-docker.pkg.dev/boldbi-294612/boldbi/boldbi-designer:16.2.5
@@ -398,6 +416,18 @@ spec:
           value: "false"
         - name: AppSettings__EnableQueryMetricsWithQueryInDebugFiles
           value: "false"
+        - name: BOLD_SERVICES_PV_USED
+          value: "false"
+        envFrom:
+        - secretRef:
+            name: azure-blob-storage-secret
+            optional: true
+        - secretRef:
+            name: oci-storage-secret
+            optional: true
+        - secretRef:
+            name: aws-s3-storage-secret
+            optional: true
         resources:
           requests:
             cpu: 250m
@@ -410,15 +440,9 @@ spec:
           periodSeconds: 15
           timeoutSeconds: 5
         volumeMounts:
-        - mountPath: /application/app_data
-          name: bi-dataservice-volume
         - mountPath: /application/bi/dataservice/logs/k8s
           name: log4net-config-volume
       volumes:
-      - name: bi-dataservice-volume
-        persistentVolumeClaim:
-          claimName: bold-fileserver-claim
-          readOnly: false
       - name: log4net-config-volume
         configMap:
           name: log4net-config
@@ -442,10 +466,7 @@ spec:
       - name: id-web-initialization
         image: busybox:1.28
         command: ["/bin/sh","-c"]
-        args: ["while [ ! -f /application/app_data/configuration/config.json ] || [ ! -f /application/app_data/configuration/privatekeys.dat ]; do echo 'Waiting for required files...'; sleep 10; done; echo 'Both config.json and privatekeys.dat files exist.'"]
-        volumeMounts:
-        - mountPath: /application/app_data
-          name: bold-etl-volume
+        args: ["echo 'Waiting for id-web service...'; while ! nc -z id-web-service 6000; do echo 'Still waiting...'; sleep 5; done; echo 'id-web is ready'"]
       containers:
       - name: bold-etl-container
         image: us-docker.pkg.dev/boldbi-294612/boldbi/bold-etl:16.2.5
@@ -454,6 +475,18 @@ spec:
         env:
         - name: BOLD_SERVICES_HOSTING_ENVIRONMENT
           value: k8s
+        - name: BOLD_SERVICES_PV_USED
+          value: "false"
+        envFrom:
+        - secretRef:
+            name: azure-blob-storage-secret
+            optional: true
+        - secretRef:
+            name: oci-storage-secret
+            optional: true
+        - secretRef:
+            name: aws-s3-storage-secret
+            optional: true
         resources:
           requests:
             cpu: 250m
@@ -466,15 +499,9 @@ spec:
           periodSeconds: 15
           timeoutSeconds: 5
         volumeMounts:
-        - mountPath: /application/app_data
-          name: bold-etl-volume
         - mountPath: /application/etl/etlservice/logs/k8s
           name: log4net-config-volume
       volumes:
-      - name: bold-etl-volume
-        persistentVolumeClaim:
-          claimName: bold-fileserver-claim
-          readOnly: false
       - name: log4net-config-volume
         configMap:
           name: log4net-config
@@ -500,10 +527,7 @@ spec:
       - name: id-web-initialization
         image: busybox:1.28
         command: ["/bin/sh","-c"]
-        args: ["while [ ! -f /application/app_data/configuration/config.json ] || [ ! -f /application/app_data/configuration/privatekeys.dat ]; do echo 'Waiting for required files...'; sleep 10; done; echo 'Both config.json and privatekeys.dat files exist.'"]
-        volumeMounts:
-        - mountPath: /application/app_data
-          name: bold-ai-volume
+        args: ["echo 'Waiting for id-web service...'; while ! nc -z id-web-service 6000; do echo 'Still waiting...'; sleep 5; done; echo 'id-web is ready'"]
       containers:
       - name: bold-ai-container
         image: us-docker.pkg.dev/boldbi-294612/boldbi/bold-ai:16.2.5
@@ -512,6 +536,18 @@ spec:
         env:
         - name: BOLD_SERVICES_HOSTING_ENVIRONMENT
           value: k8s
+        - name: BOLD_SERVICES_PV_USED
+          value: "false"
+        envFrom:
+        - secretRef:
+            name: azure-blob-storage-secret
+            optional: true
+        - secretRef:
+            name: oci-storage-secret
+            optional: true
+        - secretRef:
+            name: aws-s3-storage-secret
+            optional: true
         resources:
           requests:
             cpu: 250m
@@ -524,15 +560,9 @@ spec:
           periodSeconds: 15
           timeoutSeconds: 5
         volumeMounts:
-        - mountPath: /application/app_data
-          name: bold-ai-volume
         - mountPath: /application/ai/aiservice/logs/k8s
           name: log4net-config-volume
       volumes:
-      - name: bold-ai-volume
-        persistentVolumeClaim:
-          claimName: bold-fileserver-claim
-          readOnly: false
       - name: log4net-config-volume
         configMap:
           name: log4net-config
