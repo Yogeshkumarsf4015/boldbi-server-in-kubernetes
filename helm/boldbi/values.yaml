@@ -396,6 +396,39 @@ licenseKeyDetails:
   # The Bold BI license key that you purchased.
   licenseKey: ""
 
+## Bold BI Upgrade Center Configuration
+upgradeCenter:
+  # Set this to true to enable the Bold BI Upgrade Center service
+  enabled: false
+  # If enabled, provide the Root User administrator credentials (email and password) under rootUserDetails or specify them here.
+  # Note: Credentials provided under rootUserDetails take priority. The Upgrade Center credentials are used only when rootUserDetails is empty.
+  secret:
+    BOLDBI_ADMIN_USERNAME: ""
+    BOLDBI_ADMIN_PASSWORD: ""
+
+  # Upgrade Center image repository and tag
+  image:
+    # repo: us-central1-docker.pkg.dev/boldbi-dev-296107/boldbi/bold-upgrade-center
+    # tag: v1.0.180695
+    repo: sivakumar2809/upgrade-center-ui
+    tag: v5.2
+    pullPolicy: Always
+  
+  # Replica count for Upgrade Center deployment
+  replicaCount: 1
+  
+  # Resource requests and limits for Upgrade Center
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: "1"
+      memory: 1536Mi
+  
+  # Ingress path prefix for Upgrade Center
+  ingressPath: /upgrade-center
+
 # Tolerations allow the pods to be scheduled into nodes with matching taints.
 # Set this to true if you use tolerations in your cluster.
 # If you need more than one toleration, you can add tolerations below.
