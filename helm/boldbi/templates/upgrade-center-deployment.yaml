@@ -105,14 +105,18 @@ data:
   releaseVersionsApiUrl: "https://boldbi-release-api.boldbidemo.com/version/json"
   idpApi: "http://id-api-service:6001/api"
   ums: "http://id-ums-service:6002/ums"
-  playwrightRunnerImage: "sivakumar2809/upgrade-center-qa:v3.3"
+  allowedForwardedPrefix0: "/upgrade-center"
+  allowedForwardedPrefix1: "/platform"
+  allowedForwardedPrefix2: "/platform/upgrade-center"
+  playwrightRunnerImage: "sivakumar2809/upgrade-center-qa:v3.4"
   playwrightJobTimeoutSeconds: "9000"
+  playwrightCleanupJobTimeoutSeconds: "900"
   playwrightCompletedJobTtlSeconds: "3600"
   playwrightWorkers: "1"
   playwrightJobCpuRequest: "1"
-  playwrightJobCpuLimit: "2"
+  playwrightJobCpuLimit: "3"
   playwrightJobMemoryRequest: "2Gi"
-  playwrightJobMemoryLimit: "4Gi"
+  playwrightJobMemoryLimit: "9Gi"
   playwrightSharedStateVolumeEnabled: "true"
   playwrightSharedStateStorageClassName: ""
   playwrightSharedStateStorageSize: "1Gi"
@@ -127,6 +131,11 @@ data:
   productHealthCheckTimeoutSeconds: "300"
   productHealthCheckPollSeconds: "10"
   productHealthCheckRequestTimeoutSeconds: "10"
+  kubernetesSkipTlsVerify: "false"
+  kubernetesAllowSkipTlsVerifyForLocalDevelopment: "false"
+  kubernetesCertificateAuthorityPath: "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+  allowedImageRepository0: "us-docker.pkg.dev/boldbi-294612/boldbi"
+  allowedImageRegistryHost0: "us-docker.pkg.dev"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -159,6 +168,50 @@ spec:
       imagePullSecrets:
       - name: {{ .Values.imagePullSecrets }}
       {{- end }}
+      initContainers:
+        - name: wait-for-idp-configuration
+          image: curlimages/curl:8.10.1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: IDP_API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: boldbi-upgrade-center-config
+                  key: idpApi
+          command:
+            - /bin/sh
+            - -c
+          args:
+            - |
+              set -eu
+
+              configuration_url="${IDP_API_URL%/}/configuration"
+              attempt=1
+
+              while [ "$attempt" -le 10 ]; do
+                echo "Checking IDP configuration endpoint. Attempt ${attempt}/3."
+                response_file="$(mktemp)"
+                status_code="$(curl -sS -o "$response_file" -w "%{http_code}" --connect-timeout 5 --max-time 10 "$configuration_url" || true)"
+                response_bytes="$(wc -c < "$response_file" | tr -d ' ')"
+
+                if [ "$status_code" = "200" ] && [ "$response_bytes" -gt 0 ]; then
+                  echo "IDP configuration endpoint returned a response. Status: ${status_code}. ResponseBytes: ${response_bytes}."
+                  rm -f "$response_file"
+                  exit 0
+                fi
+
+                echo "IDP configuration endpoint is not ready. Status: ${status_code:-request_failed}. ResponseBytes: ${response_bytes}. Waiting 10 seconds before retry."
+                rm -f "$response_file"
+
+                if [ "$attempt" -lt 3 ]; then
+                  sleep 10
+                fi
+
+                attempt=$((attempt + 1))
+              done
+
+              echo "IDP configuration endpoint did not return a usable response after 3 attempts."
+              exit 1
       containers:
         - name: boldbi-upgrade-center
           image: "{{ .Values.upgradeCenter.image.repo }}:{{ .Values.upgradeCenter.image.tag }}"
@@ -192,8 +245,23 @@ spec:
                 configMapKeyRef:
                   name: boldbi-upgrade-center-config
                   key: ums
+            - name: UpgradeCenter__Authentication__AllowedForwardedPrefixes__0
+              valueFrom:
+                configMapKeyRef:
+                  name: boldbi-upgrade-center-config
+                  key: allowedForwardedPrefix0
+            - name: UpgradeCenter__Authentication__AllowedForwardedPrefixes__1
+              valueFrom:
+                configMapKeyRef:
+                  name: boldbi-upgrade-center-config
+                  key: allowedForwardedPrefix1
+            - name: UpgradeCenter__Authentication__AllowedForwardedPrefixes__2
+              valueFrom:
+                configMapKeyRef:
+                  name: boldbi-upgrade-center-config
+                  key: allowedForwardedPrefix2
             - name: UpgradeCenter__Playwright__UseKubernetesJob
-              value: "true"
+              value: "false"
             - name: UpgradeCenter__Playwright__RunnerImage
               valueFrom:
                 configMapKeyRef:
@@ -204,6 +272,11 @@ spec:
                 configMapKeyRef:
                   name: boldbi-upgrade-center-config
                   key: playwrightJobTimeoutSeconds
+            - name: UpgradeCenter__Playwright__CleanupJobTimeoutSeconds
+              valueFrom:
+                configMapKeyRef:
+                  name: boldbi-upgrade-center-config
+                  key: playwrightCleanupJobTimeoutSeconds
             - name: UpgradeCenter__Playwright__CompletedJobTtlSeconds
               valueFrom:
                 configMapKeyRef:
@@ -304,6 +377,31 @@ spec:
                 configMapKeyRef:
                   name: boldbi-upgrade-center-config
                   key: productHealthCheckRequestTimeoutSeconds
+            - name: UpgradeCenter__Kubernetes__SkipTlsVerify
+              valueFrom:
+                configMapKeyRef:
+                  name: boldbi-upgrade-center-config
+                  key: kubernetesSkipTlsVerify
+            - name: UpgradeCenter__Kubernetes__AllowSkipTlsVerifyForLocalDevelopment
+              valueFrom:
+                configMapKeyRef:
+                  name: boldbi-upgrade-center-config
+                  key: kubernetesAllowSkipTlsVerifyForLocalDevelopment
+            - name: UpgradeCenter__Kubernetes__CertificateAuthorityPath
+              valueFrom:
+                configMapKeyRef:
+                  name: boldbi-upgrade-center-config
+                  key: kubernetesCertificateAuthorityPath
+            - name: UpgradeCenter__Kubernetes__AllowedImageRepositories__0
+              valueFrom:
+                configMapKeyRef:
+                  name: boldbi-upgrade-center-config
+                  key: allowedImageRepository0
+            - name: UpgradeCenter__Kubernetes__AllowedImageRegistryHosts__0
+              valueFrom:
+                configMapKeyRef:
+                  name: boldbi-upgrade-center-config
+                  key: allowedImageRegistryHost0
             - name: POD_NAMESPACE
               valueFrom:
                 fieldRef:
@@ -336,14 +434,18 @@ spec:
           volumeMounts:
             - name: tmp
               mountPath: /tmp
+            {{- if $hasRealPV }}
             - mountPath: /app/App_Data
               name: upgrade-center-volume
+            {{- end }}
       volumes:
         - name: tmp
           emptyDir: {}
+        {{- if $hasRealPV }}
         - name: upgrade-center-volume
           persistentVolumeClaim:
             claimName: bold-fileserver-claim
+        {{- end }}
       {{- if .Values.tolerationEnable }}
       tolerations:
       {{- range .Values.tolerations }}

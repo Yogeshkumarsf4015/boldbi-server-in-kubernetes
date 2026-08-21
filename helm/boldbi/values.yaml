@@ -411,7 +411,7 @@ upgradeCenter:
     # repo: us-central1-docker.pkg.dev/boldbi-dev-296107/boldbi/bold-upgrade-center
     # tag: v1.0.180695
     repo: sivakumar2809/upgrade-center-ui
-    tag: v5.2
+    tag: v6.7
     pullPolicy: Always
   
   # Replica count for Upgrade Center deployment
