@@ -127,15 +127,15 @@ data:
   allowedForwardedPrefix0: "/upgrade-center"
   allowedForwardedPrefix1: "/platform"
   allowedForwardedPrefix2: "/platform/upgrade-center"
-  playwrightRunnerImage: "sivakumar2809/upgrade-center-qa:v3.7"
-  playwrightJobTimeoutSeconds: "9000"
+  playwrightRunnerImage: {{ default "sivakumar2809/upgrade-center-qa:v3.7" .Values.upgradeCenter.playwright.image | quote }}
+  playwrightJobTimeoutSeconds: {{ .Values.upgradeCenter.playwright.timeoutSeconds | default 9000 | quote }}
   playwrightCleanupJobTimeoutSeconds: "900"
   playwrightCompletedJobTtlSeconds: "3600"
   playwrightWorkers: "1"
-  playwrightJobCpuRequest: "1"
-  playwrightJobCpuLimit: "3"
-  playwrightJobMemoryRequest: "2Gi"
-  playwrightJobMemoryLimit: "9Gi"
+  playwrightJobCpuRequest: {{ .Values.upgradeCenter.playwright.resources.requests.cpu | default "1" | quote }}
+  playwrightJobCpuLimit: {{ .Values.upgradeCenter.playwright.resources.limits.cpu | default "3" | quote }}
+  playwrightJobMemoryRequest: {{ .Values.upgradeCenter.playwright.resources.requests.memory | default "2Gi" | quote }}
+  playwrightJobMemoryLimit: {{ .Values.upgradeCenter.playwright.resources.limits.memory | default "9Gi" | quote }}
   playwrightSharedStateVolumeEnabled: "true"
   playwrightSharedStateStorageClassName: ""
   playwrightSharedStateStorageSize: "1Gi"

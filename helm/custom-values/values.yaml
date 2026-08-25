@@ -343,6 +343,65 @@ queryMetricsWithQueryInDebugFiles:
 querymetricswithqueryinHAR:
   enable: false
 
+## Bold BI Upgrade Center Configuration
+upgradeCenter:
+  # Set this to true to enable the Bold BI Upgrade Center service
+  enabled: false
+
+  # If enabled, provide the Root User administrator credentials (email and password) under rootUserDetails
+  # or specify them here.
+  # Note: Credentials provided under rootUserDetails take priority. The Upgrade Center credentials are used
+  # only when rootUserDetails is empty.
+  secret:
+    BOLDBI_ADMIN_USERNAME: ""
+    BOLDBI_ADMIN_PASSWORD: ""
+
+  # Upgrade Center image repository and tag
+  image:
+    # repo: us-central1-docker.pkg.dev/boldbi-dev-296107/boldbi/bold-upgrade-center
+    # tag: v1.0.180695
+    repo: sivakumar2809/upgrade-center-ui
+    tag: v6.7
+    pullPolicy: Always
+
+  # Replica count for Upgrade Center deployment
+  replicaCount: 1
+
+  # Resource requests and limits for Upgrade Center
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: "1"
+      memory: 1536Mi
+
+  # Ingress path prefix for Upgrade Center
+  ingressPath: /upgrade-center
+
+  # Playwright runner configuration used by the Upgrade Center during pre-upgrade validation.
+  playwright:
+    # Image (with optional tag) used by the Playwright runner. Provide the full image reference you want to use.
+    # Example: "sivakumar2809/upgrade-center-qa:v3.7" or "my-registry.example.com/playwright-runner:1.4.0"
+    # Leave empty to use the chart default.
+    image: ""
+
+    # Timeout (in seconds) for a single Playwright runner job before it is forcibly terminated.
+    timeoutSeconds: 9000
+
+    # CPU and memory requests and limits applied to the Playwright runner job pods.
+    resources:
+      requests:
+        # CPU request for the Playwright runner. Use Kubernetes quantity syntax (e.g. "1", "500m", "1500m").
+        cpu: "1"
+        # Memory request for the Playwright runner. Use Kubernetes quantity syntax (e.g. "1Gi", "2Gi", "4Gi").
+        memory: 2Gi
+      limits:
+        # CPU limit for the Playwright runner. Use Kubernetes quantity syntax (e.g. "2", "3", "4").
+        cpu: "3"
+        # Memory limit for the Playwright runner. Use Kubernetes quantity syntax (e.g. "4Gi", "8Gi", "16Gi").
+        memory: 9Gi
+
 # Tolerations allow the pods to be scheduled into nodes with matching taints.
 # Set this to true if you use tolerations in your cluster.
 # If you need more than one toleration, you can add tolerations below.

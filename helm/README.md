@@ -264,13 +264,14 @@ For Helm chart, you'll need to craft a `values.yaml`.
         upgradeCenter *
       </td>
       <td>
-        Bold BI Upgrade Center enables seamless in-place upgrades of Bold BI within your Kubernetes cluster. 
+        Bold BI Upgrade Center enables seamless in-place upgrades of Bold BI within your Kubernetes cluster.
         <br /><br />
         <b>Configuration:</b>
         <ul>
           <li><b>enabled</b>: Set to <code>true</code> to enable the Upgrade Center service. Default is <code>false</code>.</li>
           <li><b>resources</b>: CPU and memory requests and limits for Upgrade Center pods.</li>
           <li><b>secret</b>: Root user administrator credentials (BOLDBI_ADMIN_USERNAME and BOLDBI_ADMIN_PASSWORD). Note: Credentials from rootUserDetails take priority if provided.</li>
+          <li><b>playwright</b>: Customer-configurable options for the Playwright runner that the Upgrade Center launches during pre-upgrade validation. See the <a href="#upgrade-center-configuration">Upgrade Center Configuration</a> section for details.</li>
         </ul>
         <b>Note:</b> Upgrade Center requires proper RBAC permissions and access to Kubernetes API for managing deployments and jobs during the upgrade process.
       </td>
@@ -396,6 +397,15 @@ The following environment variables are optional. If not provided, a manual Appl
 
 The Upgrade Center is an optional service that enables in-place upgrades of Bold BI in your Kubernetes cluster. To enable Upgrade Center, set `upgradeCenter.enabled: true` in your values.yaml.
 
+> **Ingress routing for the Upgrade Center** is generated **inline** by the same template that produces the main BI ingress for your load balancer. No separate ingress file is required:
+>
+> | Load Balancer | Ingress template |
+> | --- | --- |
+> | `traefik` | `templates/traefik.yaml` (new `IngressRoute` + trailing-slash middleware) |
+> | `kong` | `templates/kong_ingress.yaml` (new `Ingress`) |
+> | `istio` | `templates/istio_gateway.yaml` (extra `match` in the `VirtualService`) |
+> | `nginx` | `templates/ingress.yaml` (NOTE: the nginx branch in `ingress.yaml` has pre-existing complex `if/else` nesting that makes inlining fragile. Until that's refactored, nginx users should rely on a dedicated `Ingress` resource for the upgrade center that targets the `boldbi-upgrade-center` service on port `80` at the path set in `upgradeCenter.ingressPath`. Use the same `nginxIngressAnnotations` and `singleHost.secretName` from your main nginx ingress for consistency.) |
+
 <table>
     <tr>
       <td>
@@ -461,7 +471,76 @@ The Upgrade Center is an optional service that enables in-place upgrades of Bold
        Root user administrator password for Upgrade Center authentication. If not provided, the password from <code>rootUserDetails.password</code> will be used. This field is optional if <code>rootUserDetails</code> is already configured.
       </td>
     </tr>
+    <tr>
+      <td>
+       upgradeCenter.playwright.image
+      </td>
+      <td>
+       Container image (with optional tag) used by the Playwright runner that the Upgrade Center launches during pre-upgrade validation. Provide the full image reference you want to use (for example, <code>my-registry.example.com/boldbi/playwright-runner:1.4.0</code>). When empty, the chart default <code>sivakumar2809/upgrade-center-qa:v3.7</code> is used.
+      </td>
+    </tr>
+    <tr>
+      <td>
+       upgradeCenter.playwright.timeoutSeconds
+      </td>
+      <td>
+       Maximum duration (in seconds) that a single Playwright runner job is allowed to run before being forcibly terminated. Default is <code>9000</code> (2.5 hours).
+      </td>
+    </tr>
+    <tr>
+      <td>
+       upgradeCenter.playwright.resources.requests.cpu
+      </td>
+      <td>
+       CPU request for the Playwright runner job pods. Use Kubernetes quantity syntax (e.g. <code>"500m"</code>, <code>"1"</code>). Default is <code>"1"</code>.
+      </td>
+    </tr>
+    <tr>
+      <td>
+       upgradeCenter.playwright.resources.requests.memory
+      </td>
+      <td>
+       Memory request for the Playwright runner job pods. Use Kubernetes quantity syntax (e.g. <code>"1Gi"</code>, <code>"2Gi"</code>). Default is <code>"2Gi"</code>.
+      </td>
+    </tr>
+    <tr>
+      <td>
+       upgradeCenter.playwright.resources.limits.cpu
+      </td>
+      <td>
+       CPU limit for the Playwright runner job pods. Use Kubernetes quantity syntax (e.g. <code>"2"</code>, <code>"3"</code>). Default is <code>"3"</code>.
+      </td>
+    </tr>
+    <tr>
+      <td>
+       upgradeCenter.playwright.resources.limits.memory
+      </td>
+      <td>
+       Memory limit for the Playwright runner job pods. Use Kubernetes quantity syntax (e.g. <code>"6Gi"</code>, <code>"9Gi"</code>). Default is <code>"9Gi"</code>.
+      </td>
+    </tr>
 </table>
+<br/>
+
+#### Example: Custom Playwright runner configuration
+
+```yaml
+upgradeCenter:
+  enabled: true
+  playwright:
+    image: "my-registry.example.com/boldbi/playwright-runner:1.4.0"
+    timeoutSeconds: 7200
+    resources:
+      requests:
+        cpu: "500m"
+        memory: 1Gi
+      limits:
+        cpu: "2"
+        memory: 6Gi
+```
+
+The same overrides can be added to any cluster overlay file under `helm/custom-values/` (for example `aks-values.yaml`, `eks-values.yaml`, `gke-values.yaml`, `oke-values.yaml`, `ack-values.yaml`, `eks-alb-values.yaml`, `common-*` overlays, or `Auto-deploy-values.yaml`) and passed to Helm via `helm install ... -f helm/custom-values/<your-overlay>.yaml`.
+
 <br/>
 
 ## Environment variables for configuring Branding in backend
