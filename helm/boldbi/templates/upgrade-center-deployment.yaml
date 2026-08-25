@@ -1,4 +1,23 @@
 {{- if .Values.upgradeCenter.enabled }}
+{{- $hasRealPV := or
+    .Values.persistentVolume.useExistingClaim
+    (and (eq .Values.clusterProvider "onpremise")
+      (ne (default "" .Values.persistentVolume.onpremise.hostPath) ""))
+    (and (eq .Values.clusterProvider "aks")
+      (or (ne (default "" .Values.persistentVolume.aks.nfs.fileShareName) "")
+       (ne (default "" .Values.persistentVolume.aks.fileShareName) "")))
+    (and (eq .Values.clusterProvider "eks")
+      (ne (default "" .Values.persistentVolume.eks.efsFileSystemId) ""))
+    (and (eq .Values.clusterProvider "gke")
+      (and (ne (default "" .Values.persistentVolume.gke.fileShareIp) "")
+        (ne (default "" .Values.persistentVolume.gke.fileShareName) "")))
+    (and (eq .Values.clusterProvider "ack")
+      (ne (default "" .Values.persistentVolume.ack.serverName) ""))
+    (and (eq .Values.clusterProvider "oke")
+      (or (ne (default "" .Values.persistentVolume.oke.volumeHandle) "")
+       (and .Values.persistentVolume.oke.blockVolume.blockVolumeEnable
+         (ne (default "" .Values.persistentVolume.oke.blockVolume.blockVolumeCapacity) ""))))
+}}
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -108,7 +127,7 @@ data:
   allowedForwardedPrefix0: "/upgrade-center"
   allowedForwardedPrefix1: "/platform"
   allowedForwardedPrefix2: "/platform/upgrade-center"
-  playwrightRunnerImage: "sivakumar2809/upgrade-center-qa:v3.4"
+  playwrightRunnerImage: "sivakumar2809/upgrade-center-qa:v3.7"
   playwrightJobTimeoutSeconds: "9000"
   playwrightCleanupJobTimeoutSeconds: "900"
   playwrightCompletedJobTtlSeconds: "3600"

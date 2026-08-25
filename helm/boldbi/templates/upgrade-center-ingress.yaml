@@ -11,6 +11,7 @@ spec:
     replacement: ${1}/
     permanent: true
 ---
+{{- $upgradeCenterHost := (split "/" .Values.appBaseUrl)._2 -}}
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
@@ -30,7 +31,7 @@ spec:
   {{- end }}
   routes:
     - kind: Rule
-      match: Host(`in-app-upgrade.boldbidemo.com`) && PathPrefix(`{{ .Values.upgradeCenter.ingressPath }}`)
+      match: Host(`{{ $upgradeCenterHost }}`) && PathPrefix(`{{ .Values.upgradeCenter.ingressPath }}`)
       middlewares:
         - name: body-limit-200m
         - name: boldbi-upgrade-center-trailing-slash
