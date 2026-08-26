@@ -320,8 +320,8 @@ upgradeCenter:
   # If enabled, provide the Root User administrator credentials (email and password) under rootUserDetails or specify them here.
   # Note: Credentials provided under rootUserDetails take priority. The Upgrade Center credentials are used only when rootUserDetails is empty.
   secret:
-    BOLDBI_ADMIN_USERNAME: ""
-    BOLDBI_ADMIN_PASSWORD: ""
+    adminUsername: ""
+    adminPassword: ""
 
   # Upgrade Center image repository and tag
   image:

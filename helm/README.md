@@ -1,4 +1,4 @@
-﻿# Deploy Bold BI using Helm
+# Deploy Bold BI using Helm
 
 This chart installs [Bold BI](https://www.boldbi.com/) on Kubernetes. You can create Kubernetes cluster in cloud cluster providers(GKE, AKS, EKS and OKE). Please follow the below documentation for Bold BI deployment in a specific cloud environments.
 
@@ -270,7 +270,7 @@ For Helm chart, you'll need to craft a `values.yaml`.
         <ul>
           <li><b>enabled</b>: Set to <code>true</code> to enable the Upgrade Center service. Default is <code>false</code>.</li>
           <li><b>resources</b>: CPU and memory requests and limits for Upgrade Center pods.</li>
-          <li><b>secret</b>: Root user administrator credentials (BOLDBI_ADMIN_USERNAME and BOLDBI_ADMIN_PASSWORD). Note: Credentials from rootUserDetails take priority if provided.</li>
+          <li><b>secret</b>: Root user administrator credentials (adminUsername and adminPassword). Note: Credentials from rootUserDetails take priority if provided.</li>
           <li><b>playwright</b>: Customer-configurable options for the Playwright runner that the Upgrade Center launches during pre-upgrade validation. See the <a href="#upgrade-center-configuration">Upgrade Center Configuration</a> section for details.</li>
         </ul>
         <b>Note:</b> Upgrade Center requires proper RBAC permissions and access to Kubernetes API for managing deployments and jobs during the upgrade process.
@@ -397,15 +397,6 @@ The following environment variables are optional. If not provided, a manual Appl
 
 The Upgrade Center is an optional service that enables in-place upgrades of Bold BI in your Kubernetes cluster. To enable Upgrade Center, set `upgradeCenter.enabled: true` in your values.yaml.
 
-> **Ingress routing for the Upgrade Center** is generated **inline** by the same template that produces the main BI ingress for your load balancer. No separate ingress file is required:
->
-> | Load Balancer | Ingress template |
-> | --- | --- |
-> | `traefik` | `templates/traefik.yaml` (new `IngressRoute` + trailing-slash middleware) |
-> | `kong` | `templates/kong_ingress.yaml` (new `Ingress`) |
-> | `istio` | `templates/istio_gateway.yaml` (extra `match` in the `VirtualService`) |
-> | `nginx` | `templates/ingress.yaml` (NOTE: the nginx branch in `ingress.yaml` has pre-existing complex `if/else` nesting that makes inlining fragile. Until that's refactored, nginx users should rely on a dedicated `Ingress` resource for the upgrade center that targets the `boldbi-upgrade-center` service on port `80` at the path set in `upgradeCenter.ingressPath`. Use the same `nginxIngressAnnotations` and `singleHost.secretName` from your main nginx ingress for consistency.) |
-
 <table>
     <tr>
       <td>
@@ -457,7 +448,7 @@ The Upgrade Center is an optional service that enables in-place upgrades of Bold
     </tr>
     <tr>
       <td>
-       upgradeCenter.secret.BOLDBI_ADMIN_USERNAME
+       upgradeCenter.secret.adminUsername
       </td>
       <td>
        Root user administrator username for Upgrade Center authentication. If not provided, the username from <code>rootUserDetails.email</code> will be used. This field is optional if <code>rootUserDetails</code> is already configured.
@@ -465,7 +456,7 @@ The Upgrade Center is an optional service that enables in-place upgrades of Bold
     </tr>
     <tr>
       <td>
-       upgradeCenter.secret.BOLDBI_ADMIN_PASSWORD
+       upgradeCenter.secret.adminPassword
       </td>
       <td>
        Root user administrator password for Upgrade Center authentication. If not provided, the password from <code>rootUserDetails.password</code> will be used. This field is optional if <code>rootUserDetails</code> is already configured.
