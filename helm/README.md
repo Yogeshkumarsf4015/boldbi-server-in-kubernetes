@@ -261,19 +261,11 @@ For Helm chart, you'll need to craft a `values.yaml`.
     </tr>
     <tr>
       <td>
-        upgradeCenter *
+        upgradeCenter.enabled
       </td>
       <td>
-        Bold BI Upgrade Center enables seamless in-place upgrades of Bold BI within your Kubernetes cluster.
-        <br /><br />
-        <b>Configuration:</b>
-        <ul>
-          <li><b>enabled</b>: Set to <code>true</code> to enable the Upgrade Center service. Default is <code>false</code>.</li>
-          <li><b>resources</b>: CPU and memory requests and limits for Upgrade Center pods.</li>
-          <li><b>secret</b>: Root user administrator credentials (adminUsername and adminPassword). Note: Credentials from rootUserDetails take priority if provided.</li>
-          <li><b>playwright</b>: Customer-configurable options for the Playwright runner that the Upgrade Center launches during pre-upgrade validation. See the <a href="#upgrade-center-configuration">Upgrade Center Configuration</a> section for details.</li>
-        </ul>
-        <b>Note:</b> Upgrade Center requires proper RBAC permissions and access to Kubernetes API for managing deployments and jobs during the upgrade process.
+        Set to <code>true</code> to deploy and enable the Bold BI Upgrade Center service. Default is <code>false</code>.<br /><br />
+        For full configuration options (credentials, resources, Playwright runner), refer to the <a href="../docs/upgrade-center.md#deploy-upgrade-center-using-helm">Upgrade Center configuration guide</a>.
       </td>
     </tr>
     </table>
@@ -393,9 +385,9 @@ The following environment variables are optional. If not provided, a manual Appl
 </table>
 <br/>
 
-## Upgrade Center Configuration
+## Environment variables for configuring Upgrade Center
 
-The Upgrade Center is an optional service that enables in-place upgrades of Bold BI in your Kubernetes cluster. To enable Upgrade Center, set `upgradeCenter.enabled: true` in your values.yaml.
+The following environment variables are used to configure the Bold BI Upgrade Center. Set `upgradeCenter.enabled: true` to deploy the service. For full deployment steps and configuration details, refer to the [Upgrade Center configuration guide](../docs/upgrade-center.md#deploy-upgrade-center-using-helm).
 
 <table>
     <tr>
@@ -411,7 +403,7 @@ The Upgrade Center is an optional service that enables in-place upgrades of Bold
        upgradeCenter.enabled
       </td>
       <td>
-       Set to <code>true</code> to deploy and enable the Bold BI Upgrade Center service. By default, this is set to <code>false</code>.
+       Set to <code>true</code> to deploy and enable the Bold BI Upgrade Center service. Default is <code>false</code>.
       </td>
     </tr>
     <tr>
@@ -512,25 +504,6 @@ The Upgrade Center is an optional service that enables in-place upgrades of Bold
     </tr>
 </table>
 <br/>
-
-#### Example: Custom Playwright runner configuration
-
-```yaml
-upgradeCenter:
-  enabled: true
-  playwright:
-    image: "my-registry.example.com/boldbi/playwright-runner:1.4.0"
-    timeoutSeconds: 7200
-    resources:
-      requests:
-        cpu: "500m"
-        memory: 1Gi
-      limits:
-        cpu: "2"
-        memory: 6Gi
-```
-
-The same overrides can be added to any cluster overlay file under `helm/custom-values/` (for example `aks-values.yaml`, `eks-values.yaml`, `gke-values.yaml`, `oke-values.yaml`, `ack-values.yaml`, `eks-alb-values.yaml`, `common-*` overlays, or `Auto-deploy-values.yaml`) and passed to Helm via `helm install ... -f helm/custom-values/<your-overlay>.yaml`.
 
 <br/>
 
