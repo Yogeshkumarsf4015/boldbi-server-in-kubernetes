@@ -2,9 +2,9 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 namespace: bold-services
-appBaseUrl: 'https://testing.boldbidemo.com'
+appBaseUrl: ''
 optionalLibs: 'mongodb,mysql,influxdb,snowflake,oracle,npgsql'
-clusterProvider: 'aks'
+clusterProvider: ''
 
 persistentVolume:
   # persistent volumes were global resources. 
@@ -179,15 +179,15 @@ loadBalancer:
     # konghq.com/preserve-host: "true"
     # konghq.com/protocols: "http,https"
 
-  # singleHost: 
-  #   secretName: bold-tls
-  multipleHost:
-    hostArray:
-      - hosts: 
-          - kubernetes.docker.internal
-          - example.com
-          - upgrade.boldbi.com
-        secretName: bold-tls
+  singleHost: 
+    secretName: bold-tls
+  # multipleHost:
+  #   hostArray:
+  #     - hosts: 
+  #         - kubernetes.docker.internal
+  #         - example.com
+  #         - upgrade.boldbi.com
+  #       secretName: bold-tls
 
   # Enable Gzip in nginx-ingress to reduce the size of HTTP responses.
   enableGzip: false 
@@ -400,7 +400,7 @@ licenseKeyDetails:
 ## Bold BI Upgrade Center Configuration
 upgradeCenter:
   # Set this to true to enable the Bold BI Upgrade Center service
-  enabled: true
+  enabled: false
   # If enabled, provide the Root User administrator credentials (email and password) under rootUserDetails or specify them here.
   # Note: Credentials provided under rootUserDetails take priority. The Upgrade Center credentials are used only when rootUserDetails is empty.
   secret:
