@@ -218,7 +218,7 @@ spec:
           {{- if not $.Values.subApplication.subPath }}
           - path: /boldservices{{ $.Values.upgradeCenter.ingressPath }}/*
           {{- else }}
-          - path: /{{ $.Values.subApplication.subPath }}{{ .Values.upgradeCenter.ingressPath }}/*
+          - path: /{{ $.Values.subApplication.subPath }}/upgrade-center/*
           {{- end }}
             {{- if $ingressSupportsPathType }}
             pathType: {{ $ingressPathType }}
@@ -395,9 +395,9 @@ spec:
               {{- end }}
           {{- if $.Values.upgradeCenter.enabled }}
           {{- if not $.Values.subApplication.subPath }}
-          - path: /boldservices{{ .Values.upgradeCenter.ingressPath }}/*
+          - path: /boldservices/upgrade-center/*
           {{- else }}
-          - path: /{{ $.Values.subApplication.subPath }}{{ .Values.upgradeCenter.ingressPath }}/*
+          - path: /{{ $.Values.subApplication.subPath }}/upgrade-center/*
           {{- end }}
             {{- if $ingressSupportsPathType }}
             pathType: {{ $ingressPathType }}
@@ -845,7 +845,7 @@ spec:
               servicePort: 6010
               {{- end }}
           {{- if $.Values.upgradeCenter.enabled }}
-          - path: {{ .Values.upgradeCenter.ingressPath }}/*
+          - path: /upgrade-center/*
             {{- if $ingressSupportsPathType }}
             pathType: {{ $ingressPathType }}
             {{- end }}

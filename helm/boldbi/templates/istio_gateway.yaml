@@ -165,7 +165,7 @@ spec:
   # Upgrade Center
   - match:
     - uri:
-        prefix: {{ .Values.upgradeCenter.ingressPath }}
+        prefix: /upgrade-center
     route:
     - destination:
         port:

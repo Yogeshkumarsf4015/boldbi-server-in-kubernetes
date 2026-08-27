@@ -6,9 +6,9 @@
   {{- $subPath = printf "/%s" (.Values.subApplication.subPath | default "boldservices") }}
 {{- end }}
 
-{{- $upgradeCenterPath := .Values.upgradeCenter.ingressPath }}
+{{- $upgradeCenterPath := "/upgrade-center" }}
 {{- if .Values.subApplication.enabled }}
-  {{- $upgradeCenterPath = printf "%s%s" $subPath .Values.upgradeCenter.ingressPath }}
+  {{- $upgradeCenterPath = printf "%s%s" $subPath "/upgrade-center" }}
 {{- end }}
 
 apiVersion: traefik.io/v1alpha1
