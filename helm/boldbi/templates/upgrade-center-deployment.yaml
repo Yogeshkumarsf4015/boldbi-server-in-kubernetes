@@ -281,7 +281,7 @@ spec:
                   name: boldbi-upgrade-center-config
                   key: allowedForwardedPrefix0
             - name: UpgradeCenter__Playwright__UseKubernetesJob
-              value: "false"
+              value: "true"
             - name: UpgradeCenter__Playwright__RunnerImage
               valueFrom:
                 configMapKeyRef:

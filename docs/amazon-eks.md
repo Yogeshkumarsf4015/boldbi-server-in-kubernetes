@@ -156,4 +156,4 @@ kubectl get pods -n bold-services
     
     https://help.boldbi.com/embedded-bi/application-startup
 
-30. You can enable the **Upgrade Center** feature to manage in-application upgrades directly from the Bold BI administration panel. Refer to the [Upgrade Center configuration guide](upgrade-center.md#deploy-upgrade-center-using-kubectl) for deployment steps using kubectl.
+30. You can enable the **Upgrade Center** feature to manage in-application upgrades directly from the Bold BI administration panel. Refer to the [Upgrade Center configuration guide](upgrade-center-deployment.md#deploy-upgrade-center-using-kubectl) for deployment steps using kubectl.

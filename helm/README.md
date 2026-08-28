@@ -96,7 +96,7 @@ For Helm chart, you'll need to craft a `values.yaml`.
        persistentVolume *
       </td>
       <td>
-       Please refer to <a href='docs/configuration.md#persistent-volume'>this</a> section to know more on how to set Persistant Volumes for Bold BI.
+       Please refer to <a href='docs/configuration.md#persistent-volume'>this</a> section to know more on how to set Persistent Volumes for Bold BI.
       </td>
     </tr>
     <tr>
@@ -265,7 +265,7 @@ For Helm chart, you'll need to craft a `values.yaml`.
       </td>
       <td>
         Set to <code>true</code> to deploy and enable the Bold BI Upgrade Center service. Default is <code>false</code>.<br /><br />
-        For full configuration options (credentials, resources, Playwright runner), refer to the <a href="../docs/upgrade-center.md#deploy-upgrade-center-using-helm">Upgrade Center configuration guide</a>.
+        For full configuration options (credentials, resources, Playwright runner), refer to the <a href="../docs/upgrade-center-deployment.md#deploy-upgrade-center-using-helm">Upgrade Center configuration guide</a>.
       </td>
     </tr>
     </table>
@@ -329,7 +329,7 @@ The following environment variables are optional. If not provided, a manual Appl
        dbPort
       </td>
       <td>
-       The system will use the following default port numbers based on the database server type.<br />PostgrSQL – 5432<br />MySQL -3306<br />Oracle - 1521<br />Please specify the port number for your database server if it is configured on a different port.<br /><br />For MS SQL Server, this parameter is not necessary.
+       The system will use the following default port numbers based on the database server type.<br />PostgreSQL – 5432<br />MySQL -3306<br />Oracle - 1521<br />Please specify the port number for your database server if it is configured on a different port.<br /><br />For MS SQL Server, this parameter is not necessary.
       </td>
     </tr>
     <tr>
@@ -387,7 +387,7 @@ The following environment variables are optional. If not provided, a manual Appl
 
 ## Environment variables for configuring Upgrade Center
 
-The following environment variables are used to configure the Bold BI Upgrade Center. Set `upgradeCenter.enabled: true` to deploy the service. For full deployment steps and configuration details, refer to the [Upgrade Center configuration guide](../docs/upgrade-center.md#deploy-upgrade-center-using-helm).
+The following environment variables are used to configure the Bold BI Upgrade Center. Set `upgradeCenter.enabled: true` to deploy the service. For full deployment steps and configuration details, refer to the [Upgrade Center configuration guide](../docs/upgrade-center-deployment.md#deploy-upgrade-center-using-helm).
 
 <table>
     <tr>

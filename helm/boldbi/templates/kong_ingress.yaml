@@ -179,7 +179,7 @@ spec:
                 port:
                   number: 6010
           {{- if $.Values.upgradeCenter.enabled }}
-          - path: {{ $subPath }}{{ $.Values.upgradeCenter.ingressPath }}
+          - path: {{ $subPath }}/upgrade-center
             pathType: Prefix
             backend:
               service:
