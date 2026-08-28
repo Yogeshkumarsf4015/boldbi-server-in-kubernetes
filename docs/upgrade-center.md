@@ -91,8 +91,39 @@ See [Access the Upgrade Center from Bold BI](#access-the-upgrade-center-from-bol
 
 ### Prerequisites
 
-- The Helm chart from this repository must be configured for your cluster.
-- You must have the appropriate `values.yaml` overlay for your cluster (e.g., `aks-values.yaml`, `eks-values.yaml`, `gke-values.yaml`).
+#### Get Repo Info
+
+1. Add the Bold BI helm repository
+
+```console
+helm repo add boldbi https://boldbi.github.io/boldbi-server-in-kubernetes
+helm repo update
+```
+
+2. View charts in repo
+
+```console
+helm search repo boldbi
+
+NAME            CHART VERSION   APP VERSION     DESCRIPTION
+boldbi/boldbi   16.2.5           16.2.5         Embed powerful analytics inside your apps and t...
+```
+
+#### Install Chart
+
+You can either:
+
+* Use a new `values.yaml` file downloaded from the Bold BI repository for a fresh deployment.
+* Use the existing `values.yaml` file from your current deployment and update it with the Upgrade Center configuration.
+
+Download the appropriate `values.yaml` file based on your Kubernetes platform:
+
+* For `GKE` please download the values.yaml file [here](https://raw.githubusercontent.com/boldbi/boldbi-server-in-kubernetes/main/helm/custom-values/gke-values.yaml).
+* For `EKS` please download the values.yaml file [here](https://raw.githubusercontent.com/boldbi/boldbi-server-in-kubernetes/main/helm/custom-values/eks-values.yaml).
+* For `AKS` please download the values.yaml file [here](https://raw.githubusercontent.com/boldbi/boldbi-server-in-kubernetes/main/helm/custom-values/aks-values.yaml).
+* For `OKE` please download the values.yaml file [here](https://raw.githubusercontent.com/boldbi/boldbi-server-in-kubernetes/main/helm/custom-values/oke-values.yaml).
+* For `ACK` please download the values.yaml file [here](https://github.com/boldbi/boldbi-server-in-kubernetes/blob/main/helm/custom-values/ack-values.yaml).
+
 
 > **Note:** Upgrade Center can be enabled during the initial Bold BI deployment or added to an existing one. Simply set `upgradeCenter.enabled: true` in your values file before running `helm install` or `helm upgrade`.
 
@@ -147,7 +178,7 @@ The Upgrade Center uses a Playwright-based runner to automate pre-upgrade valida
 upgradeCenter:
   enabled: true
   playwright:
-    image: ""                 # Leave empty to use the chart default, or provide a custom image reference
+    image: ""                 
     timeoutSeconds: 9000      # Maximum duration (seconds) for a single Playwright job (default: 2.5 hours)
     resources:
       requests:
@@ -186,7 +217,7 @@ helm upgrade --install boldbi boldbi/boldbi \
 Check that all Upgrade Center pods are running:
 
 ```sh
-kubectl get pods -n bold-services -l app=boldbi-upgrade-center
+kubectl get pods -n bold-services
 ```
 
 You should see the pod in `Running` state:
