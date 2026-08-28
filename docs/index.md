@@ -16,11 +16,6 @@
 * [Azure Kubernetes Service (AKS)](microsoft-aks.md)
 * [Oracle Kubernetes Engine (OKE)](oracle-oke.md)
 
-
-# Enable Upgrade Center
-
-After deploying Bold BI, you can optionally enable the **Upgrade Center** feature to manage in-application upgrades directly from the Bold BI administration panel. Refer to the [Upgrade Center configuration guide](upgrade-center.md) for deployment steps using kubectl or Helm.
-
 # Upgrade Bold BI
 
 If you are upgrading Bold BI to latest version, please follow the steps in this [link](upgrade.md).
