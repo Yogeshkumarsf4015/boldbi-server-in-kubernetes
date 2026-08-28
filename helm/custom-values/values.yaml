@@ -366,10 +366,6 @@ upgradeCenter:
     tag: v1.0
     pullPolicy: Always
 
-  # Number of Upgrade Center web application pods.
-  # Keep this as 1 unless the deployment has been validated for multiple active instances.
-  replicaCount: 1
-
   # CPU and memory requests/limits for the Upgrade Center web application pod.
   # Increase these values if large history, log, report, or Kubernetes monitoring workloads are expected.
   resources:
