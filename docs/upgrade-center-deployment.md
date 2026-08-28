@@ -80,25 +80,51 @@ kubectl apply -f ingressroute-upgrade-center.yaml
 Confirm that the Upgrade Center pod is running:
 
 ```sh
-kubectl get pods -n bold-services | grep upgrade-center
+kubectl get pods -n bold-services -l app.kubernetes.io/name=boldbi-upgrade-center
 ```
 
 ### Step 6 — Access the Upgrade Center
 
 See [Access the Upgrade Center from Bold BI](#access-the-upgrade-center-from-bold-bi) below.
 
----
 
 ## Deploy Upgrade Center using Helm
 
-### Prerequisites
+#### Get Repo Info
 
-- The Helm chart from this repository must be configured for your cluster.
-- You must have the appropriate `values.yaml` overlay for your cluster (e.g., `aks-values.yaml`, `eks-values.yaml`, `gke-values.yaml`).
+1. Add the Bold BI helm repository
+
+    ```console
+    helm repo add boldbi https://boldbi.github.io/boldbi-server-in-kubernetes
+    helm repo update
+    ```
+
+2. View charts in repo
+
+    ```console
+    helm search repo boldbi
+
+    NAME            CHART VERSION   APP VERSION     DESCRIPTION
+    boldbi/boldbi   16.2.5           16.2.5         Embed powerful analytics inside your apps and t...
+    ```
+
+#### Install Chart
+
+You can either:
+
+* Use a latest `values.yaml` file downloaded from the Bold BI repository for a fresh deployment.
+* Use the existing `values.yaml` file from your current deployment and update it with the Upgrade Center configuration.
+
+Download the appropriate `values.yaml` file based on your Kubernetes platform:
+
+* For `GKE` please download the values.yaml file [here](https://raw.githubusercontent.com/boldbi/boldbi-server-in-kubernetes/main/helm/custom-values/gke-values.yaml).
+* For `EKS` please download the values.yaml file [here](https://raw.githubusercontent.com/boldbi/boldbi-server-in-kubernetes/main/helm/custom-values/eks-values.yaml).
+* For `AKS` please download the values.yaml file [here](https://raw.githubusercontent.com/boldbi/boldbi-server-in-kubernetes/main/helm/custom-values/aks-values.yaml).
+* For `OKE` please download the values.yaml file [here](https://raw.githubusercontent.com/boldbi/boldbi-server-in-kubernetes/main/helm/custom-values/oke-values.yaml).
+* For `ACK` please download the values.yaml file [here](https://github.com/boldbi/boldbi-server-in-kubernetes/blob/main/helm/custom-values/ack-values.yaml).
+
 
 > **Note:** Upgrade Center can be enabled during the initial Bold BI deployment or added to an existing one. Simply set `upgradeCenter.enabled: true` in your values file before running `helm install` or `helm upgrade`.
-
----
 
 ### Step 1 — Enable Upgrade Center in values.yaml
 
@@ -110,8 +136,6 @@ Open your cluster overlay file (for example, `helm/custom-values/aks-values.yaml
 upgradeCenter:
   enabled: true
 ```
-
----
 
 ### Step 2 — Configure admin credentials
 
@@ -141,7 +165,6 @@ upgradeCenter:
 | `upgradeCenter.resources.limits.cpu` | CPU limit for Upgrade Center pods. | `1` |
 | `upgradeCenter.resources.limits.memory` | Memory limit for Upgrade Center pods. | `1536Mi` |
 
----
 
 ### Step 3 — (Optional) Configure the Playwright runner
 
@@ -151,7 +174,7 @@ The Upgrade Center uses a Playwright-based runner to automate pre-upgrade valida
 upgradeCenter:
   enabled: true
   playwright:
-    image: ""                 # Leave empty to use the chart default, or provide a custom image reference
+    image: ""
     timeoutSeconds: 9000      # Maximum duration (seconds) for a single Playwright job (default: 2.5 hours)
     resources:
       requests:
@@ -190,7 +213,7 @@ helm upgrade --install boldbi boldbi/boldbi \
 Check that all Upgrade Center pods are running:
 
 ```sh
-kubectl get pods -n bold-services -l app=boldbi-upgrade-center
+kubectl get pods -n bold-services -l app.kubernetes.io/name=boldbi-upgrade-center
 ```
 
 You should see the pod in `Running` state:
@@ -225,3 +248,9 @@ Once all services are running and the ingress is active:
 4. The Upgrade Center will display the currently installed version and any available upgrades. You can initiate an upgrade directly from this interface.
 
     ![Upgrade](/docs/images/upgrade.png)
+
+    ![confirm-upgrade](/docs/images/start-upgrade.png)
+
+## See also
+
+- **[Upgrade Center User Guide](https://help.boldbi.com/deploying-bold-bi/upgrade-center/)** — Learn more about the Upgrade Center feature, the in-application UX, supported upgrade flows, and prerequisites from within Bold BI.
