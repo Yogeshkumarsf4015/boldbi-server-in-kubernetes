@@ -111,4 +111,13 @@ spec:
             name: bold-ai-service
             port:
               number: 6010
+      {{- if .Values.upgradeCenter.enabled }}
+      - path: "/upgrade-center/*"
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: boldbi-upgrade-center
+            port:
+              number: 80
+      {{- end }}
 {{- end }}
