@@ -349,7 +349,7 @@ licenseKeyDetails:
 ## Bold BI Upgrade Center Configuration
 upgradeCenter:
   # Set this to true to deploy the Bold BI Upgrade Center service. Set it to false to skip Upgrade Center resources.
-  enabled: false
+  enabled: true
   # Root User administrator credentials used by Upgrade Center validation jobs.
   # 
   # Credentials provided under rootUserDetails take priority. These values are used only when rootUserDetails is empty.
@@ -358,12 +358,7 @@ upgradeCenter:
     adminPassword: ""
 
   # Upgrade Center web application image.
-  # repo: container image repository for the Upgrade Center application.
-  # tag: image tag/version to deploy.
-  # pullPolicy: Kubernetes image pull policy. Use IfNotPresent for stable releases and Always for active testing images.
   image:
-    # repo: us-central1-docker.pkg.dev/boldbi-dev-296107/boldbi/bold-upgrade-center
-    # tag: v1.0.180695
     repo: syncfusion/boldbi-upgrade-center
     tag: v1.0
     pullPolicy: Always
@@ -378,20 +373,19 @@ upgradeCenter:
       cpu: "1"
       memory: 1536Mi
 
-
-
   # Playwright runner configuration used by Upgrade Center validation and cleanup stages.
   # The runner is launched as a separate Kubernetes Job when Playwright Kubernetes validation is enabled.
   playwright:
-    # Image used by the Playwright runner Job. Provide a full image reference including tag.
-    # Example: "syncfusion/boldbi-playwright:v1.0" or "my-registry.example.com/playwright-runner:1.4.0"
-    # Leave empty only when Playwright Kubernetes validation is disabled or a deployment-specific default is supplied.
-    image: ""
+    # Image used by the Playwright runner Job.
+    image:
+      repo: syncfusion/boldbi-playwright
+      tag: v1.0
+      pullPolicy: Always
 
     # Timeout in seconds for each Playwright runner Job before Kubernetes terminates it.
     # Increase this for large environments or long-running validation suites.
     # If omitted, the Upgrade Center application default is used.
-    timeoutSeconds: 9000
+    timeoutSeconds:
 
     # CPU and memory requests/limits applied to Playwright runner Job pods.
     # Requests reserve resources for scheduling; limits cap maximum usage.
@@ -407,7 +401,6 @@ upgradeCenter:
         cpu: "3"
         # Memory limit for the runner. Use Kubernetes quantity syntax, such as "4Gi", "8Gi", or "16Gi".
         memory: 9Gi
-
 
 # Tolerations allow the pods to be scheduled into nodes with matching taints.
 # Set this to true if you use tolerations in your cluster.

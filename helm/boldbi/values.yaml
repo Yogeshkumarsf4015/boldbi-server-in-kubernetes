@@ -424,8 +424,6 @@ upgradeCenter:
       cpu: "1"
       memory: 1536Mi
 
-
-
   # Playwright runner configuration used by Upgrade Center validation and cleanup stages.
   # The runner is launched as a separate Kubernetes Job when Playwright Kubernetes validation is enabled.
   playwright:
@@ -454,6 +452,7 @@ upgradeCenter:
         cpu: "3"
         # Memory limit for the runner. Use Kubernetes quantity syntax, such as "4Gi", "8Gi", or "16Gi".
         memory: 9Gi
+
 # Tolerations allow the pods to be scheduled into nodes with matching taints.
 # Set this to true if you use tolerations in your cluster.
 # If you need more than one toleration, you can add tolerations below.
