@@ -125,7 +125,7 @@ data:
   idpApi: "http://id-api-service:6001/api"
   ums: "http://id-ums-service:6002/ums"
   allowedForwardedPrefix0: "/upgrade-center"
-  playwrightRunnerImage: {{ default "syncfusion/boldbi-playwright:v1.0" .Values.upgradeCenter.playwright.image | quote }}
+  playwrightRunnerImage: "{{ $.Values.upgradeCenter.playwright.image.repo }}:{{ $.Values.upgradeCenter.playwright.image.tag }}"
   playwrightJobTimeoutSeconds: {{ .Values.upgradeCenter.playwright.timeoutSeconds | default 9000 | quote }}
   playwrightCleanupJobTimeoutSeconds: "900"
   playwrightCompletedJobTtlSeconds: "3600"

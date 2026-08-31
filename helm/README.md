@@ -459,7 +459,7 @@ The following environment variables are used to configure the Bold BI Upgrade Ce
        upgradeCenter.playwright.image
       </td>
       <td>
-       Container image (with optional tag) used by the Playwright runner that the Upgrade Center launches during pre-upgrade validation. Provide the full image reference you want to use (for example, <code>my-registry.example.com/boldbi/playwright-runner:1.4.0</code>). When empty, the chart default <code>syncfusion/boldbi-playwright:v1.0</code> is used.
+       Container image used by the Playwright runner that the Upgrade Center launches during pre-upgrade validation.
       </td>
     </tr>
     <tr>

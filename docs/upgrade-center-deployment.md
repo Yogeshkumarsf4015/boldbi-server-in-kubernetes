@@ -189,7 +189,6 @@ upgradeCenter:
 
 | Parameter | Description | Default |
 |-----------|-------------|---------|
-| `upgradeCenter.playwright.image` | Container image for the Playwright runner. Leave empty to use the chart default. | `""` |
 | `upgradeCenter.playwright.timeoutSeconds` | Maximum duration in seconds for a Playwright job before forced termination. | `9000` |
 | `upgradeCenter.playwright.resources.requests.cpu` | CPU request for Playwright runner job pods. | `"1"` |
 | `upgradeCenter.playwright.resources.requests.memory` | Memory request for Playwright runner job pods. | `2Gi` |
