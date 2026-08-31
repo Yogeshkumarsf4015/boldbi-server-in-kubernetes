@@ -252,4 +252,4 @@ Once all services are running and the ingress is active:
 
 ## See also
 
-- **[Upgrade Center User Guide](https://help.boldbi.com/deploying-bold-bi/upgrade-center/)** — Learn more about the Upgrade Center feature, the in-application UX, supported upgrade flows, and prerequisites from within Bold BI.
+- **[Upgrade Center User Guide](https://help.boldbi.com/deploying-bold-bi/upgrade-center/)** — Learn more about the Upgrade Center feature.
