@@ -474,7 +474,12 @@ spec:
         {{- if $hasRealPV }}
         - name: upgrade-center-volume
           persistentVolumeClaim:
-            claimName: bold-fileserver-claim
+            {{- if $.Values.persistentVolume.useExistingClaim }}
+            claimName: {{ $.Values.persistentVolume.claimName }}
+            {{- else }}
+            claimName: {{ printf "%s-claim" $.Values.persistentVolume.name }}
+            {{- end }}
+            readOnly: false
         {{- end }}
       {{- if .Values.tolerationEnable }}
       tolerations:
