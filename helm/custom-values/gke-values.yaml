@@ -320,7 +320,7 @@ queryMetricsWithQueryInDebugFiles:
 ## Bold BI Upgrade Center Configuration
 upgradeCenter:
   # Set this to true to deploy the Bold BI Upgrade Center service. Set it to false to skip Upgrade Center resources.
-  enabled: true
+  enabled: false
   # Root User administrator credentials used by Upgrade Center validation jobs.
   # 
   # Credentials provided under rootUserDetails take priority. These values are used only when rootUserDetails is empty.
@@ -356,7 +356,7 @@ upgradeCenter:
     # Timeout in seconds for each Playwright runner Job before Kubernetes terminates it.
     # Increase this for large environments or long-running validation suites.
     # If omitted, the Upgrade Center application default is used.
-    timeoutSeconds:
+    timeoutSeconds: 9000
 
     # CPU and memory requests/limits applied to Playwright runner Job pods.
     # Requests reserve resources for scheduling; limits cap maximum usage.
