@@ -134,9 +134,9 @@ data:
   playwrightJobCpuLimit: {{ .Values.upgradeCenter.playwright.resources.limits.cpu | default "3" | quote }}
   playwrightJobMemoryRequest: {{ .Values.upgradeCenter.playwright.resources.requests.memory | default "2Gi" | quote }}
   playwrightJobMemoryLimit: {{ .Values.upgradeCenter.playwright.resources.limits.memory | default "9Gi" | quote }}
-  playwrightSharedStateVolumeEnabled: "true"
-  playwrightSharedStateStorageClassName: ""
-  playwrightSharedStateStorageSize: "1Gi"
+  playwrightSharedStateVolumeEnabled: "{{ .Values.upgradeCenter.playwright.sharedState.enable | default true | quote }}"
+  playwrightSharedStateStorageClassName: "{{ .Values.upgradeCenter.playwright.sharedState.storageClass }}"
+  playwrightSharedStateStorageSize: "{{ .Values.upgradeCenter.playwright.sharedState.size | default "1Gi" | quote }}"
   playwrightSharedStateAccessMode: "ReadWriteOnce"
   playwrightSharedStateMountPath: "/app/playwright-shared-state"
   playwrightSharedStateFsGroup: "1001"
