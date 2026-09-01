@@ -16,9 +16,9 @@ Download the following YAML files for Upgrade Center deployment:
 
 | File | Description |
 |------|-------------|
-| [`boldbi-upgrade-center.yaml`](https://raw.githubusercontent.com/boldbi/boldbi-server-in-kubernetes/v16.2.5/deploy/boldbi-upgrade-center/k8s/boldbi-upgrade-center.yaml) | ServiceAccount, RBAC Role/RoleBinding, Deployment, and Service for the Upgrade Center |
-| [`boldbi-upgrade-center-playwright-secret.yaml`](https://raw.githubusercontent.com/boldbi/boldbi-server-in-kubernetes/v16.2.5/deploy/boldbi-upgrade-center/k8s/boldbi-upgrade-center-playwright-secret.yaml) | Secret containing the Bold BI admin credentials used by the Playwright automation runner |
-| [`ingressroute-upgrade-center.yaml`](https://raw.githubusercontent.com/boldbi/boldbi-server-in-kubernetes/v16.2.5/deploy/boldbi-upgrade-center/k8s/ingressroute-upgrade-center.yaml) | Ingress/IngressRoute to expose the Upgrade Center endpoint |
+| [`boldbi-upgrade-center.yaml`](https://raw.githubusercontent.com/boldbi/boldbi-server-in-kubernetes/v16.2.5/deploy/boldbi-upgrade-center/boldbi-upgrade-center.yaml) | ServiceAccount, RBAC Role/RoleBinding, Deployment, and Service for the Upgrade Center |
+| [`boldbi-upgrade-center-playwright-secret.yaml`](https://raw.githubusercontent.com/boldbi/boldbi-server-in-kubernetes/v16.2.5/deploy/boldbi-upgrade-center/boldbi-upgrade-center-playwright-secret.yaml) | Secret containing the Bold BI admin credentials used by the Playwright automation runner |
+| [`ingressroute-upgrade-center.yaml`](https://raw.githubusercontent.com/boldbi/boldbi-server-in-kubernetes/v16.2.5/deploy/boldbi-upgrade-center/ingressroute-upgrade-center.yaml) | Ingress/IngressRoute to expose the Upgrade Center endpoint |
 
 
 ### Step 2 — Configure admin credentials

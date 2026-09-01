@@ -141,7 +141,7 @@ data:
   playwrightSharedStateMountPath: "/app/playwright-shared-state"
   playwrightSharedStateFsGroup: "1001"
   playwrightPodHoldSeconds: "180"
-  playwrightPassRateThreshold: "90"
+  playwrightPassRateThreshold: "100"
   playwrightReportUploadBaseUrl: "http://boldbi-upgrade-center/upgrade-center/api/playwright-reports"
   playwrightResultUploadBaseUrl: "http://boldbi-upgrade-center/upgrade-center/api/playwright-results"
   productHealthCheckEnabled: "true"
