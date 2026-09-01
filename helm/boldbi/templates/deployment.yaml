@@ -107,6 +107,8 @@ spec:
           value: {{ $.Values.appBaseUrl }}
         - name: BOLD_SERVICES_HOSTING_ENVIRONMENT
           value: k8s
+        - name: BOLD_SERVICES_UPGRADE_CENTER_ENABLE
+          value: "{{ $.Values.upgradeCenter.enabled | default "false" }}"
         {{- if eq $.Values.logging.output "console" }}
         - name: BOLD_SERVICES_CONSOLE_LOG_ENABLED
           value: "true"
@@ -196,8 +198,6 @@ spec:
           value: "{{ $.Values.subApplication.subPath | default "boldservices" }}"
         - name: BOLD_SERVICES_USE_SITE_IDENTIFIER
           value: "{{ $.Values.useSiteIdentifier.enable }}" 
-        - name: BOLD_SERVICES_UPGRADE_CENTER_ENABLE
-          value: "{{ $.Values.upgradeCenter.enabled | default "false" }}"
         {{- else if eq $service.app "bi-dataservice" }}
         - name: AppSettings__CustomSizePDFExport
           value: "{{ $.Values.customSizePdfExport.enable }}"
