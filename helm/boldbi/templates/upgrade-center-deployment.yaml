@@ -131,9 +131,9 @@ data:
   playwrightCompletedJobTtlSeconds: "3600"
   playwrightWorkers: "1"
   playwrightJobCpuRequest: {{ .Values.upgradeCenter.playwright.resources.requests.cpu | default "1" | quote }}
-  playwrightJobCpuLimit: {{ .Values.upgradeCenter.playwright.resources.limits.cpu | default "3" | quote }}
+  playwrightJobCpuLimit: {{ .Values.upgradeCenter.playwright.resources.limits.cpu | default "2" | quote }}
   playwrightJobMemoryRequest: {{ .Values.upgradeCenter.playwright.resources.requests.memory | default "2Gi" | quote }}
-  playwrightJobMemoryLimit: {{ .Values.upgradeCenter.playwright.resources.limits.memory | default "9Gi" | quote }}
+  playwrightJobMemoryLimit: {{ .Values.upgradeCenter.playwright.resources.limits.memory | default "4Gi" | quote }}
   playwrightSharedStateVolumeEnabled: {{ .Values.upgradeCenter.playwright.sharedState.enable | default true | quote }}
   playwrightSharedStateStorageClassName: {{ .Values.upgradeCenter.playwright.sharedState.storageClass }}
   playwrightSharedStateStorageSize: {{ .Values.upgradeCenter.playwright.sharedState.size | default "1Gi" | quote }}

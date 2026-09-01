@@ -378,9 +378,9 @@ upgradeCenter:
         memory: 2Gi
       limits:
         # CPU limit for the runner. Use Kubernetes quantity syntax, such as "2", "3", or "4".
-        cpu: "3"
+        cpu: "2"
         # Memory limit for the runner. Use Kubernetes quantity syntax, such as "4Gi", "8Gi", or "16Gi".
-        memory: 9Gi
+        memory: 4Gi
 
 # Tolerations allow the pods to be scheduled into nodes with matching taints.
 # Set this to true if you use tolerations in your cluster.

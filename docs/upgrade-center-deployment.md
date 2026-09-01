@@ -181,8 +181,8 @@ upgradeCenter:
         cpu: "1"
         memory: 2Gi
       limits:
-        cpu: "3"
-        memory: 9Gi
+        cpu: "2"
+        memory: 4Gi
 ```
 
 #### Playwright runner parameters
