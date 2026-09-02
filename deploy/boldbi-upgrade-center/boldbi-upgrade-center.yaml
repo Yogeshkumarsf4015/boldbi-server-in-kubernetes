@@ -1,44 +1,15 @@
-{{- if .Values.upgradeCenter.enabled }}
-{{- $hasRealPV := or
-    .Values.persistentVolume.useExistingClaim
-    (and (eq .Values.clusterProvider "onpremise")
-      (ne (default "" .Values.persistentVolume.onpremise.hostPath) ""))
-    (and (eq .Values.clusterProvider "aks")
-      (or (ne (default "" .Values.persistentVolume.aks.nfs.fileShareName) "")
-       (ne (default "" .Values.persistentVolume.aks.fileShareName) "")))
-    (and (eq .Values.clusterProvider "eks")
-      (ne (default "" .Values.persistentVolume.eks.efsFileSystemId) ""))
-    (and (eq .Values.clusterProvider "gke")
-      (and (ne (default "" .Values.persistentVolume.gke.fileShareIp) "")
-        (ne (default "" .Values.persistentVolume.gke.fileShareName) "")))
-    (and (eq .Values.clusterProvider "ack")
-      (ne (default "" .Values.persistentVolume.ack.serverName) ""))
-    (and (eq .Values.clusterProvider "oke")
-      (or (ne (default "" .Values.persistentVolume.oke.volumeHandle) "")
-       (and .Values.persistentVolume.oke.blockVolume.blockVolumeEnable
-         (ne (default "" .Values.persistentVolume.oke.blockVolume.blockVolumeCapacity) ""))))
-}}
----
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: boldbi-upgrade-center
-{{ include "boldbi.namespace" . | indent 2 }}
-  labels:
-    helm.sh/chart: {{ .Chart.Name }}_{{ .Chart.Version }}
-    app.kubernetes.io/name: boldbi-upgrade-center
-    app.kubernetes.io/instance: {{ .Release.Name }}
+  namespace: bold-services
 automountServiceAccountToken: true
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: boldbi-upgrade-center
-{{ include "boldbi.namespace" . | indent 2 }}
-  labels:
-    helm.sh/chart: {{ .Chart.Name }}_{{ .Chart.Version }}
-    app.kubernetes.io/name: boldbi-upgrade-center
-    app.kubernetes.io/instance: {{ .Release.Name }}
+  namespace: bold-services
 rules:
   - apiGroups:
       - apps
@@ -94,11 +65,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: boldbi-upgrade-center
-{{ include "boldbi.namespace" . | indent 2 }}
-  labels:
-    helm.sh/chart: {{ .Chart.Name }}_{{ .Chart.Version }}
-    app.kubernetes.io/name: boldbi-upgrade-center
-    app.kubernetes.io/instance: {{ .Release.Name }}
+  namespace: bold-services
 subjects:
   - kind: ServiceAccount
     name: boldbi-upgrade-center
@@ -111,32 +78,24 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: boldbi-upgrade-center-config
-{{ include "boldbi.namespace" . | indent 2 }}
-  labels:
-    helm.sh/chart: {{ .Chart.Name }}_{{ .Chart.Version }}
-    app.kubernetes.io/name: boldbi-upgrade-center
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    {{- if .Chart.AppVersion }}
-    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-    {{- end }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  namespace: bold-services
 data:
   releaseVersionsApiUrl: "https://boldbi-release-api.boldbidemo.com/version/json"
   idpApi: "http://id-api-service:6001/api"
   ums: "http://id-ums-service:6002/ums"
   allowedForwardedPrefix0: "/upgrade-center"
-  playwrightRunnerImage: "{{ $.Values.upgradeCenter.playwright.image.repo }}:{{ $.Values.upgradeCenter.playwright.image.tag }}"
-  playwrightJobTimeoutSeconds: {{ .Values.upgradeCenter.playwright.timeoutSeconds | default 9000 | quote }}
+  playwrightRunnerImage: "syncfusion/boldbi-playwright:v1.0"
+  playwrightJobTimeoutSeconds: "9000"
   playwrightCleanupJobTimeoutSeconds: "900"
   playwrightCompletedJobTtlSeconds: "3600"
   playwrightWorkers: "1"
-  playwrightJobCpuRequest: {{ .Values.upgradeCenter.playwright.resources.requests.cpu | default "1" | quote }}
-  playwrightJobCpuLimit: {{ .Values.upgradeCenter.playwright.resources.limits.cpu | default "2" | quote }}
-  playwrightJobMemoryRequest: {{ .Values.upgradeCenter.playwright.resources.requests.memory | default "2Gi" | quote }}
-  playwrightJobMemoryLimit: {{ .Values.upgradeCenter.playwright.resources.limits.memory | default "4Gi" | quote }}
-  playwrightSharedStateVolumeEnabled: {{ .Values.upgradeCenter.playwright.sharedState.enable | default true | quote }}
-  playwrightSharedStateStorageClassName: {{ .Values.upgradeCenter.playwright.sharedState.storageClass }}
-  playwrightSharedStateStorageSize: {{ .Values.upgradeCenter.playwright.sharedState.size | default "1Gi" | quote }}
+  playwrightJobCpuRequest: "1"
+  playwrightJobCpuLimit: "2"
+  playwrightJobMemoryRequest: "2Gi"
+  playwrightJobMemoryLimit: "4Gi"
+  playwrightSharedStateVolumeEnabled: "true"
+  playwrightSharedStateStorageClassName: ""
+  playwrightSharedStateStorageSize: "1Gi"
   playwrightSharedStateAccessMode: "ReadWriteOnce"
   playwrightSharedStateMountPath: "/app/playwright-shared-state"
   playwrightSharedStateFsGroup: "1001"
@@ -160,33 +119,23 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: boldbi-upgrade-center
-{{ include "boldbi.namespace" . | indent 2 }}
+  namespace: bold-services
   labels:
-    helm.sh/chart: {{ .Chart.Name }}_{{ .Chart.Version }}
     app.kubernetes.io/name: boldbi-upgrade-center
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    {{- if .Chart.AppVersion }}
-    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-    {{- end }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.upgradeCenter.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: boldbi-upgrade-center
-      # app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
         app.kubernetes.io/name: boldbi-upgrade-center
-        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      imagePullSecrets:
+        - name: dev-imagepull-secret
       serviceAccountName: boldbi-upgrade-center
       automountServiceAccountToken: true
-      {{- if .Values.imagePullSecrets }}
-      imagePullSecrets:
-      - name: {{ .Values.imagePullSecrets }}
-      {{- end }}
       initContainers:
         - name: wait-for-idp-configuration
           image: curlimages/curl:8.10.1
@@ -244,8 +193,8 @@ spec:
               exit 1
       containers:
         - name: boldbi-upgrade-center
-          image: "{{ .Values.upgradeCenter.image.repo }}:{{ .Values.upgradeCenter.image.tag }}"
-          imagePullPolicy: {{ .Values.upgradeCenter.image.pullPolicy }}
+          image: syncfusion/boldbi-upgrade-center:v1.0
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
               name: http
@@ -456,49 +405,35 @@ spec:
             timeoutSeconds: 5
           resources:
             requests:
-              cpu: {{ .Values.upgradeCenter.resources.requests.cpu }}
-              memory: {{ .Values.upgradeCenter.resources.requests.memory }}
+              cpu: 250m
+              memory: 512Mi
             limits:
-              cpu: {{ .Values.upgradeCenter.resources.limits.cpu }}
-              memory: {{ .Values.upgradeCenter.resources.limits.memory }}
+              cpu: "1"
+              memory: 1536Mi
           volumeMounts:
             - name: tmp
               mountPath: /tmp
-            {{- if $hasRealPV }}
             - mountPath: /app/App_Data
               name: upgrade-center-volume
-            {{- end }}
       volumes:
         - name: tmp
           emptyDir: {}
-        {{- if $hasRealPV }}
         - name: upgrade-center-volume
           persistentVolumeClaim:
-            {{- if $.Values.persistentVolume.useExistingClaim }}
-            claimName: {{ $.Values.persistentVolume.claimName }}
-            {{- else }}
-            claimName: {{ printf "%s-claim" $.Values.persistentVolume.name }}
-            {{- end }}
-            readOnly: false
-        {{- end }}
-      {{- if .Values.tolerationEnable }}
-      tolerations:
-      {{- range .Values.tolerations }}
-        - key: {{ .key }}
-          operator: {{ .operator }}
-          value: {{ .value }}
-          effect: {{ .effect }}
-      {{- end }}
-      {{- end }}
-      {{- if .Values.nodeAffinityEnable }}
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: {{ .Values.nodeAffinity.key }}
-                    operator: {{ .Values.nodeAffinity.operator }}
-                    values:
-                      - {{ .Values.nodeAffinity.value }}
-      {{- end }}
-{{- end }}
+            claimName: bold-fileserver-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: boldbi-upgrade-center
+  namespace: bold-services
+  labels:
+    app.kubernetes.io/name: boldbi-upgrade-center
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: boldbi-upgrade-center
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
