@@ -189,7 +189,7 @@ spec:
       {{- end }}
       initContainers:
         - name: wait-for-idp-configuration
-          image: curlimages/curl:8.10.1
+          image: docker.io/curlimages/curl
           imagePullPolicy: IfNotPresent
           env:
             - name: IDP_API_URL
