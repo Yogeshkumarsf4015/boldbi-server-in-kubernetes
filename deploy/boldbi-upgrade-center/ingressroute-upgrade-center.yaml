@@ -20,7 +20,8 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`in-app-upgrade.boldbidemo.com`) && PathPrefix(`/upgrade-center`)
+    # Update the host value with the actual domain name used for the Bold BI deployment
+      match: Host(`example.com`) && PathPrefix(`/upgrade-center`)
       middlewares:
         - name: body-limit-200m
         - name: boldbi-upgrade-center-trailing-slash
