@@ -125,7 +125,6 @@ data:
   idpApi: "http://id-api-service:6001/api"
   ums: "http://id-ums-service:6002/ums"
   allowedForwardedPrefix0: "/upgrade-center"
-  playwrightRunnerImage: "{{ $.Values.upgradeCenter.playwright.image.repo }}:{{ $.Values.upgradeCenter.playwright.image.tag }}"
   playwrightJobTimeoutSeconds: {{ .Values.upgradeCenter.playwright.timeoutSeconds | default 9000 | quote }}
   playwrightCleanupJobTimeoutSeconds: "900"
   playwrightCompletedJobTtlSeconds: "3600"
@@ -282,11 +281,6 @@ spec:
                   key: allowedForwardedPrefix0
             - name: UpgradeCenter__Playwright__UseKubernetesJob
               value: "true"
-            - name: UpgradeCenter__Playwright__RunnerImage
-              valueFrom:
-                configMapKeyRef:
-                  name: boldbi-upgrade-center-config
-                  key: playwrightRunnerImage
             - name: UpgradeCenter__Playwright__JobTimeoutSeconds
               valueFrom:
                 configMapKeyRef:

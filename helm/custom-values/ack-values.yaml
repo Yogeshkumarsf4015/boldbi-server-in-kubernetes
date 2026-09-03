@@ -345,14 +345,8 @@ upgradeCenter:
       memory: 1536Mi
 
   # Playwright runner configuration used by Upgrade Center validation and cleanup stages.
-  # The runner is launched as a separate Kubernetes Job when Playwright Kubernetes validation is enabled.
+  # The runner image is resolved from the Bold BI release API for the selected target version.
   playwright:
-    # Image used by the Playwright runner Job.
-    image:
-      repo: syncfusion/boldbi-playwright
-      tag: v1.0
-      pullPolicy: Always
-
     sharedState:
         # Enable a shared volume for Playwright runner Jobs to persist state between runs.
         # This is required for Playwright to function correctly in Kubernetes.
