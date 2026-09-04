@@ -349,40 +349,6 @@ upgradeCenter:
       cpu: "1"
       memory: 1536Mi
 
-  # Playwright runner configuration used by Upgrade Center validation and cleanup stages.
-  # The runner image is resolved from the Bold BI release API for the selected target version.
-  playwright:
-    sharedState:
-        # Enable a shared volume for Playwright runner Jobs to persist state between runs.
-        # This is required for Playwright to function correctly in Kubernetes.
-        enable: true
-        # Storage class name for the shared volume.
-        # For EKS, keep this set to an available StorageClass and ensure the matching CSI driver is installed.
-        # Examples: use "efs-sc" only with the EFS CSI driver, or "gp2"/"gp3" only with the EBS CSI driver.
-        # If PVC creation fails, run `kubectl get storageclass` and replace this with an available class.
-        storageClass: "gp2"
-        # Size of the shared volume. Use Kubernetes quantity syntax, such as "1Gi", "2Gi", or "4Gi".
-        size: 1Gi
-
-    # Timeout in seconds for each Playwright runner Job before Kubernetes terminates it.
-    # Increase this for large environments or long-running validation suites.
-    # If omitted, the Upgrade Center application default is used.
-    timeoutSeconds: 9000
-
-    # CPU and memory requests/limits applied to Playwright runner Job pods.
-    # Requests reserve resources for scheduling; limits cap maximum usage.
-    # Increase these values when using more Playwright workers or when Chromium is CPU/memory throttled.
-    resources:
-      requests:
-        # CPU request for the runner. Use Kubernetes quantity syntax, such as "1", "500m", or "1500m".
-        cpu: "1"
-        # Memory request for the runner. Use Kubernetes quantity syntax, such as "1Gi", "2Gi", or "4Gi".
-        memory: 2Gi
-      limits:
-        # CPU limit for the runner. Use Kubernetes quantity syntax, such as "2", "3", or "4".
-        cpu: "2"
-        # Memory limit for the runner. Use Kubernetes quantity syntax, such as "4Gi", "8Gi", or "16Gi".
-        memory: 4Gi
 
 # Tolerations allow the pods to be scheduled into nodes with matching taints.
 # Set this to true if you use tolerations in your cluster.

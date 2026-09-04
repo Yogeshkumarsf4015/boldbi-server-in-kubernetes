@@ -126,6 +126,8 @@ Download the appropriate `values.yaml` file based on your Kubernetes platform:
 
 > **Note:** Upgrade Center can be enabled during the initial Bold BI deployment or added to an existing one. Simply set `upgradeCenter.enabled: true` in your values file before running `helm install` or `helm upgrade`.
 
+> **StorageClass requirement:** Upgrade Center creates a temporary shared volume for validation state used by the Playwright validation jobs. The Kubernetes cluster must have a working default StorageClass and the matching CSI driver installed. If no default StorageClass is available, the validation pod can remain in `Pending` state while waiting for the shared volume.
+
 ### Step 1 — Enable Upgrade Center in values.yaml
 
 > **RBAC scope:** The Helm chart deploys namespace-scoped RBAC for the Upgrade Center by using a `Role` and `RoleBinding` in the release namespace. It does not require cluster-wide `ClusterRole` access.
@@ -166,38 +168,8 @@ upgradeCenter:
 | `upgradeCenter.resources.limits.memory` | Memory limit for Upgrade Center pods. | `1536Mi` |
 
 
-### Step 3 — (Optional) Configure the Playwright runner
 
-The Upgrade Center uses a Playwright-based runner to automate pre-upgrade validation. You can override the default image, timeout, and resource allocation:
-
-```yaml
-upgradeCenter:
-  enabled: true
-  playwright:
-    image: ""
-    timeoutSeconds: 9000      # Maximum duration (seconds) for a single Playwright job (default: 2.5 hours)
-    resources:
-      requests:
-        cpu: "1"
-        memory: 2Gi
-      limits:
-        cpu: "2"
-        memory: 4Gi
-```
-
-#### Playwright runner parameters
-
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `upgradeCenter.playwright.timeoutSeconds` | Maximum duration in seconds for a Playwright job before forced termination. | `9000` |
-| `upgradeCenter.playwright.resources.requests.cpu` | CPU request for Playwright runner job pods. | `"1"` |
-| `upgradeCenter.playwright.resources.requests.memory` | Memory request for Playwright runner job pods. | `2Gi` |
-| `upgradeCenter.playwright.resources.limits.cpu` | CPU limit for Playwright runner job pods. | `"3"` |
-| `upgradeCenter.playwright.resources.limits.memory` | Memory limit for Playwright runner job pods. | `9Gi` |
-
----
-
-### Step 4 — Apply the Helm upgrade
+### Step 3 - Apply the Helm upgrade
 
 Run the `helm upgrade` command with your updated values file. Replace the placeholder values with those matching your deployment:
 
@@ -207,7 +179,7 @@ helm upgrade --install boldbi boldbi/boldbi \
   -f values.yaml
 ```
 
-### Step 5 — Verify the deployment
+### Step 4 - Verify the deployment
 
 Check that all Upgrade Center pods are running:
 

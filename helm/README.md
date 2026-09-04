@@ -454,56 +454,10 @@ The following environment variables are used to configure the Bold BI Upgrade Ce
        Root user administrator password for Upgrade Center authentication. If not provided, the password from <code>rootUserDetails.password</code> will be used. This field is optional if <code>rootUserDetails</code> is already configured.
       </td>
     </tr>
-    <tr>
-      <td>
-       upgradeCenter.playwright.image
-      </td>
-      <td>
-       Container image used by the Playwright runner that the Upgrade Center launches during pre-upgrade validation.
-      </td>
-    </tr>
-    <tr>
-      <td>
-       upgradeCenter.playwright.timeoutSeconds
-      </td>
-      <td>
-       Maximum duration (in seconds) that a single Playwright runner job is allowed to run before being forcibly terminated. Default is <code>9000</code> (2.5 hours).
-      </td>
-    </tr>
-    <tr>
-      <td>
-       upgradeCenter.playwright.resources.requests.cpu
-      </td>
-      <td>
-       CPU request for the Playwright runner job pods. Use Kubernetes quantity syntax (e.g. <code>"500m"</code>, <code>"1"</code>). Default is <code>"1"</code>.
-      </td>
-    </tr>
-    <tr>
-      <td>
-       upgradeCenter.playwright.resources.requests.memory
-      </td>
-      <td>
-       Memory request for the Playwright runner job pods. Use Kubernetes quantity syntax (e.g. <code>"1Gi"</code>, <code>"2Gi"</code>). Default is <code>"2Gi"</code>.
-      </td>
-    </tr>
-    <tr>
-      <td>
-       upgradeCenter.playwright.resources.limits.cpu
-      </td>
-      <td>
-       CPU limit for the Playwright runner job pods. Use Kubernetes quantity syntax (e.g. <code>"2"</code>, <code>"3"</code>). Default is <code>"3"</code>.
-      </td>
-    </tr>
-    <tr>
-      <td>
-       upgradeCenter.playwright.resources.limits.memory
-      </td>
-      <td>
-       Memory limit for the Playwright runner job pods. Use Kubernetes quantity syntax (e.g. <code>"6Gi"</code>, <code>"9Gi"</code>). Default is <code>"9Gi"</code>.
-      </td>
-    </tr>
 </table>
 <br/>
+
+> **StorageClass requirement:** Upgrade Center creates a temporary shared volume for validation state. The Kubernetes cluster must have a working default StorageClass and the matching CSI driver installed. If the default StorageClass cannot provision a volume, the validation pod remains in `Pending` state.
 
 <br/>
 
