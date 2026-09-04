@@ -193,7 +193,7 @@ spec:
               exit 1
       containers:
         - name: boldbi-upgrade-center
-          image: syncfusion/boldbi-upgrade-center:v1.0
+          image: docker.io/syncfusion/boldbi-upgrade-center:v1.0
           imagePullPolicy: Always
           ports:
             - containerPort: 8080

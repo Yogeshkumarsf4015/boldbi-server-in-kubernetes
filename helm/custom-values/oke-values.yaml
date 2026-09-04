@@ -359,7 +359,7 @@ upgradeCenter:
 
   # Upgrade Center web application image.
   image:
-    repo: syncfusion/boldbi-upgrade-center
+    repo: docker.io/syncfusion/boldbi-upgrade-center
     tag: v1.0
     pullPolicy: Always
 
