@@ -154,6 +154,7 @@ data:
   allowedImageRegistryHost0: "us-docker.pkg.dev"
   allowedImageRepository1: "syncfusion"
   allowedImageRegistryHost1: "docker.io"
+  reportRetentionJobCount: "14"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -169,7 +170,7 @@ metadata:
     {{- end }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.upgradeCenter.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: boldbi-upgrade-center
@@ -426,6 +427,11 @@ spec:
                 configMapKeyRef:
                   name: boldbi-upgrade-center-config
                   key: allowedImageRegistryHost1
+            - name: UpgradeCenter__Playwright__ReportRetentionJobCount
+              valueFrom:
+                configMapKeyRef:
+                  name: boldbi-upgrade-center-config
+                  key: reportRetentionJobCount  
             - name: POD_NAMESPACE
               valueFrom:
                 fieldRef:
