@@ -121,7 +121,7 @@ metadata:
     {{- end }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 data:
-  releaseVersionsApiUrl: "https://boldbi-release-api.boldbidemo.com/version/json"
+  releaseVersionsApiUrl: "https://release-info.boldbi.com/version/json"
   idpApi: "http://id-api-service:6001/api"
   ums: "http://id-ums-service:6002/ums"
   allowedForwardedPrefix0: "/upgrade-center"
