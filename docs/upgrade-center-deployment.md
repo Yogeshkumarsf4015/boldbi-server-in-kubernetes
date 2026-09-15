@@ -1,6 +1,9 @@
 # Enable Upgrade Center for Bold BI
+This section explains how to enable the Upgrade Center for Bold BI deployed on Kubernetes.
 
-The **Upgrade Center** is an optional feature that enables in-application upgrade management for Bold BI. Once deployed, it allows administrators to check for new releases and trigger upgrades directly from the Bold BI administration panel — without manual intervention on the cluster.
+## Overview
+
+Upgrade Center enables administrators to check for available releases, initiate upgrades, and monitor upgrade progress directly from the Bold BI administration panel without manually updating Kubernetes resources.
 
 ## Sections
 
