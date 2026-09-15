@@ -80,7 +80,7 @@ metadata:
   name: boldbi-upgrade-center-config
   namespace: bold-services
 data:
-  releaseVersionsApiUrl: "https://release-info.boldbi.com/version/json"
+  releaseVersionsApiUrl: "https://releases.boldbi.com/version/json"
   idpApi: "http://id-api-service:6001/api"
   ums: "http://id-ums-service:6002/ums"
   allowedForwardedPrefix0: "/upgrade-center"
